@@ -32,8 +32,9 @@ class FoamPlot:
             self._plot_dir.mkdir()
 
     def _get_plot_config(self,
-                         label_path: str,
-                         style: str) -> dict[str, str]:
+                         label_path: str
+                         #style: str
+                         ) -> dict[str, str]:
         """
         Configures the matplotlib style and plot labels from a config file.
 
@@ -51,7 +52,7 @@ class FoamPlot:
             The dictionary with labels.
         """
         # Set style
-        plt.style.use(style)
+        #plt.style.use(style)
 
         # Return dict with labels
         return parse_yaml_config(label_path)
@@ -97,7 +98,7 @@ class FoamPlot:
                      position_value: float,
                      position_tol: float,
                      labels: str = 'velocity',
-                     style: str = 'lutils.plt_cfg.lutils',
+                     #style: str = 'lutils.plt_cfg.lutils',
                      figure_id: str | int | None = None,
                      out_csv: bool = True) -> None:
         """
@@ -133,7 +134,7 @@ class FoamPlot:
         """
 
         # Get label and style
-        config = self._get_plot_config(labels, style)
+        config = self._get_plot_config(labels)
 
         # Retrieve figure
         fig, ax = self._get_figure_ax(figure_id)

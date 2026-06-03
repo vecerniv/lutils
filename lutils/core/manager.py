@@ -92,3 +92,9 @@ class CaseManager:
                 f'Unique Label Error: A case with label "{case_label}" already in the manager!')
 
         self.cases[case.label] = case
+
+    def get_cases(self) -> list:
+        """
+        Placeholder description
+        """
+        return list(self.cases.values())
