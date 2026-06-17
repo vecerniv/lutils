@@ -72,12 +72,7 @@ data-aria-dark="Switch to auto color mode">
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-lucide close"></i>
     </button>
-    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#lutils.io.parse_internal_field"><code class="docutils literal notranslate"><span class="pre">parse_internal_field()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.io.parse_residuals"><code class="docutils literal notranslate"><span class="pre">parse_residuals()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.io.parse_yaml_config"><code class="docutils literal notranslate"><span class="pre">parse_yaml_config()</span></code></a></li>
-</ul>
-</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
   <main class="sy-main w-full max-sm:max-w-full print:pt-6">
@@ -106,69 +101,8 @@ data-aria-dark="Switch to auto color mode">
 </div><div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
         <article class="yue" role="main">
-          <section id="module-lutils.io">
-<span id="io-utilities"></span><h1>IO Utilities<a class="headerlink" href="#module-lutils.io" title="Link to this heading">¶</a></h1>
-<dl class="py function">
-<dt class="sig sig-object py" id="lutils.io.parse_internal_field">
-<span class="sig-prename descclassname"><span class="pre">lutils.io.</span></span><span class="sig-name descname"><span class="pre">parse_internal_field</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="core.html#lutils.core.DataFrame" title="lutils.core.types.DataFrame"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="_modules/lutils/io/parser.html#parse_internal_field"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.io.parse_internal_field" title="Link to this definition">¶</a></dt>
-<dd><p>Parses a CSV-style internal field file into a DataFrame.</p>
-<p>This function expects a comma-separated format where the first line contains
-headers and subsequent lines contain numerical data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – The file path to the CSV data file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame instance containing the parsed numerical data.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="core.html#lutils.core.DataFrame" title="lutils.core.DataFrame">DataFrame</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lutils.io.parse_residuals">
-<span class="sig-prename descclassname"><span class="pre">lutils.io.</span></span><span class="sig-name descname"><span class="pre">parse_residuals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="core.html#lutils.core.DataFrame" title="lutils.core.types.DataFrame"><span class="pre">DataFrame</span></a></span></span><a class="reference internal" href="_modules/lutils/io/parser.html#parse_residuals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.io.parse_residuals" title="Link to this definition">¶</a></dt>
-<dd><p>Parses an OpenFOAM residuals file into a DataFrame.</p>
-<p>This function specifically handles OpenFOAM formatted logs where the header
-is located on the second line (prefixed with ‘#’) and fields are whitespace-separated.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>path</strong> (<em>Path</em>) – The file path to the residuals file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A DataFrame containing the residuals data. Values are converted to floats
-where possible; otherwise, they are kept as strings or NaN.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p><a class="reference internal" href="core.html#lutils.core.DataFrame" title="lutils.core.DataFrame">DataFrame</a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lutils.io.parse_yaml_config">
-<span class="sig-prename descclassname"><span class="pre">lutils.io.</span></span><span class="sig-name descname"><span class="pre">parse_yaml_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="_modules/lutils/io/parser.html#parse_yaml_config"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.io.parse_yaml_config" title="Link to this definition">¶</a></dt>
-<dd><p>Retrieves configuration labels from a preset or a YAML file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>cfg_path</strong> (<em>str</em>) – The configuration source. This can be a preset name
-(‘velocity’, ‘k’, ‘nut’, ‘epsilon’, ‘omega’) or a valid file path
-to a YAML configuration file.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>A dictionary mapping configuration keys to labels.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>dict[str, str]</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>FileNotFoundError</strong> – If <cite>cfg_path</cite> does not match a preset and the provided path does not exist.</p>
-</dd>
-</dl>
-</dd></dl>
-
+          <section id="io-utilities">
+<h1>IO Utilities<a class="headerlink" href="#io-utilities" title="Link to this heading">¶</a></h1>
 </section>
 
         </article><button class="back-to-top" type="button">

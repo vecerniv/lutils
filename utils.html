@@ -72,19 +72,7 @@ data-aria-dark="Switch to auto color mode">
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-lucide close"></i>
     </button>
-    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
-<li><a class="reference internal" href="#lutils.utils.BaseLog"><code class="docutils literal notranslate"><span class="pre">BaseLog</span></code></a><ul>
-<li><a class="reference internal" href="#lutils.utils.BaseLog.__init__"><code class="docutils literal notranslate">__init__()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.utils.BaseLog.add_batch"><code class="docutils literal notranslate">add_batch()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.utils.BaseLog.add_entry"><code class="docutils literal notranslate">add_entry()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.utils.BaseLog.write"><code class="docutils literal notranslate">write()</span></code></a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#lutils.utils.find_in_file"><code class="docutils literal notranslate"><span class="pre">find_in_file()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.utils.get_of_version"><code class="docutils literal notranslate"><span class="pre">get_of_version()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.utils.is_list_str"><code class="docutils literal notranslate"><span class="pre">is_list_str()</span></code></a></li>
-</ul>
-</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
   <main class="sy-main w-full max-sm:max-w-full print:pt-6">
@@ -113,128 +101,8 @@ data-aria-dark="Switch to auto color mode">
 </div><div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
         <article class="yue" role="main">
-          <section id="module-lutils.utils">
-<span id="helper-functions"></span><h1>Helper Functions<a class="headerlink" href="#module-lutils.utils" title="Link to this heading">¶</a></h1>
-<dl class="py class">
-<dt class="sig sig-object py" id="lutils.utils.BaseLog">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">lutils.utils.</span></span><span class="sig-name descname"><span class="pre">BaseLog</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'logs/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lutils/utils/base_logger.html#BaseLog"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.BaseLog" title="Link to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
-<p>Base class for logging OpenFOAM case data to NumPy array and writing them to a formatted text file.</p>
-<dl class="py method">
-<dt class="sig sig-object py" id="lutils.utils.BaseLog.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">log_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dtype</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">case_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">log_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'logs/'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/utils/base_logger.html#BaseLog.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.BaseLog.__init__" title="Link to this definition">¶</a></dt>
-<dd><p>Initialize the BaseLog object, create internal log array and ensure log directory exists.</p>
-<p>Parameters:
-- log_name: name of the log
-- dtype: NumPy structured dtype for log entries
-- case_path: path to OpenFOAM case folder
-- log_dir: directory to store logs, relative to case_path</p>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lutils.utils.BaseLog.add_batch">
-<span class="sig-name descname"><span class="pre">add_batch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">batch</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ndarray</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/utils/base_logger.html#BaseLog.add_batch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.BaseLog.add_batch" title="Link to this definition">¶</a></dt>
-<dd><p>Add multiple rows to the log.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><ul class="simple">
-<li><p>batch: structured NumPy array matching the log dtype</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lutils.utils.BaseLog.add_entry">
-<span class="sig-name descname"><span class="pre">add_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">row</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">tuple</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/utils/base_logger.html#BaseLog.add_entry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.BaseLog.add_entry" title="Link to this definition">¶</a></dt>
-<dd><p>Add a signle row to the log.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><ul class="simple">
-<li><p>row: a tuple matching the log dtype</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="lutils.utils.BaseLog.write">
-<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/utils/base_logger.html#BaseLog.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.BaseLog.write" title="Link to this definition">¶</a></dt>
-<dd><p>Write the logged data to a text file in a table format.</p>
-<dl class="simple">
-<dt>Parameters:</dt><dd><ul class="simple">
-<li><p>file_name: name of the output file</p></li>
-<li><p>header: optional header at the top of the log file</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lutils.utils.find_in_file">
-<span class="sig-prename descclassname"><span class="pre">lutils.utils.</span></span><span class="sig-name descname"><span class="pre">find_in_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">str_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_next</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/utils/misc.html#find_in_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.find_in_file" title="Link to this definition">¶</a></dt>
-<dd><p>Searches for a specific string pattern within a file.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>path</strong> (<em>Path</em>) – The path to the target file.</p></li>
-<li><p><strong>str_id</strong> (<em>str</em>) – The string pattern or regex to search for.</p></li>
-<li><p><strong>return_next</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, returns the non-whitespace string immediately following the match.
-If False, returns True immediately upon finding a match. Default is True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p><ul class="simple">
-<li><p>If <cite>return_next</cite> is True: The string following the match, or None if not found.</p></li>
-<li><p>If <cite>return_next</cite> is False: True if the match exists, False otherwise.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>str or bool or None</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lutils.utils.get_of_version">
-<span class="sig-prename descclassname"><span class="pre">lutils.utils.</span></span><span class="sig-name descname"><span class="pre">get_of_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case_path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/utils/misc.html#get_of_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.get_of_version" title="Link to this definition">¶</a></dt>
-<dd><p>Extracts the OpenFOAM version number from the case’s solver log.</p>
-<p>This function first identifies the solver used via ‘system/controlDict’,
-then searches the corresponding log file for the version string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>case_path</strong> (<em>Path</em>) – The root directory of the OpenFOAM case.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>The major version number if found (e.g., 2312, 11), otherwise None.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>int or None</p>
-</dd>
-<dt class="field-even">Raises<span class="colon">:</span></dt>
-<dd class="field-even"><p><strong>ValueError</strong> – If ‘system/controlDict’ is missing or if the solver name cannot be found within it.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="lutils.utils.is_list_str">
-<span class="sig-prename descclassname"><span class="pre">lutils.utils.</span></span><span class="sig-name descname"><span class="pre">is_list_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/lutils/utils/misc.html#is_list_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.utils.is_list_str" title="Link to this definition">¶</a></dt>
-<dd><p>Validates if the input key is a list composed exclusively of strings.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>key</strong> (<em>Any</em>) – The object to validate.</p>
-</dd>
-<dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p>True if <cite>key</cite> is a list of strings, False otherwise.</p>
-</dd>
-<dt class="field-odd">Return type<span class="colon">:</span></dt>
-<dd class="field-odd"><p>bool</p>
-</dd>
-</dl>
-</dd></dl>
-
+          <section id="helper-functions">
+<h1>Helper Functions<a class="headerlink" href="#helper-functions" title="Link to this heading">¶</a></h1>
 </section>
 
         </article><button class="back-to-top" type="button">
