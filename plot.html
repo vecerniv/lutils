@@ -74,9 +74,17 @@ data-aria-dark="Switch to auto color mode">
     </button>
     <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
 <li><a class="reference internal" href="#lutils.plot.FoamPlot"><code class="docutils literal notranslate"><span class="pre">FoamPlot</span></code></a><ul>
-<li><a class="reference internal" href="#lutils.plot.FoamPlot.add_data"><code class="docutils literal notranslate">add_data()</span></code></a></li>
-<li><a class="reference internal" href="#lutils.plot.FoamPlot.del_data"><code class="docutils literal notranslate">del_data()</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.FoamPlot.data_add"><code class="docutils literal notranslate">data_add()</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.FoamPlot.data_delete"><code class="docutils literal notranslate">data_delete()</span></code></a></li>
 <li><a class="reference internal" href="#lutils.plot.FoamPlot.plot_profile"><code class="docutils literal notranslate">plot_profile()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lutils.plot.Labels"><code class="docutils literal notranslate"><span class="pre">Labels</span></code></a><ul>
+<li><a class="reference internal" href="#lutils.plot.Labels.epsilon"><code class="docutils literal notranslate">epsilon</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.Labels.k"><code class="docutils literal notranslate">k</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.Labels.nut"><code class="docutils literal notranslate">nut</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.Labels.omega"><code class="docutils literal notranslate">omega</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.Labels.velocity"><code class="docutils literal notranslate">velocity</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -126,13 +134,13 @@ Default is ‘./plots/’.</p>
 </dd>
 </dl>
 <dl class="py method">
-<dt class="sig sig-object py" id="lutils.plot.FoamPlot.add_data">
-<span class="sig-name descname"><span class="pre">add_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#lutils.core.FoamCase" title="lutils.core.case.FoamCase"><span class="pre">FoamCase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot.add_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot.add_data" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lutils.plot.FoamPlot.data_add">
+<span class="sig-name descname"><span class="pre">data_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">FoamCase</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot.data_add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot.data_add" title="Link to this definition">¶</a></dt>
 <dd><p>Registers field data from a specific OpenFOAM case for plotting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>case</strong> (<a class="reference internal" href="core.html#lutils.core.FoamCase" title="lutils.core.FoamCase"><em>FoamCase</em></a>) – The OpenFOAM case object containing the data.</p></li>
+<li><p><strong>case</strong> (<em>FoamCase</em>) – The OpenFOAM case object containing the data.</p></li>
 <li><p><strong>field_name</strong> (<em>str</em>) – The name of the field variable to extract (e.g., ‘U’, ‘p’).</p></li>
 <li><p><strong>label</strong> (<em>str</em>) – The legend label to assign to this dataset in the plot.</p></li>
 </ul>
@@ -141,8 +149,8 @@ Default is ‘./plots/’.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="lutils.plot.FoamPlot.del_data">
-<span class="sig-name descname"><span class="pre">del_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot.del_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot.del_data" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="lutils.plot.FoamPlot.data_delete">
+<span class="sig-name descname"><span class="pre">data_delete</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot.data_delete"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot.data_delete" title="Link to this definition">¶</a></dt>
 <dd><p>Removes a specific dataset from the plotting queue.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -173,6 +181,71 @@ creating a line plot through the domain.</p>
 <li><p><strong>out_csv</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, exports the sliced data to CSV files in the plot directory.
 Default is True.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lutils.plot.Labels">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">lutils.plot.</span></span><span class="sig-name descname"><span class="pre">Labels</span></span><a class="reference internal" href="_modules/lutils/plot/labels.html#Labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.Labels" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A container for preset plot label configurations.</p>
+<p>This class provides a set of standard dictionaries for common OpenFOAM
+field variables (Velocity, k, nut, epsilon, omega), containing
+pre-formatted LaTeX strings for titles and axis labels.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plot.Labels.epsilon">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">epsilon</span></span><a class="headerlink" href="#lutils.plot.Labels.epsilon" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for average dissipation of $k$ ($varepsilon$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plot.Labels.k">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">k</span></span><a class="headerlink" href="#lutils.plot.Labels.k" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for turbulence kinetic energy ($k$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plot.Labels.nut">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">nut</span></span><a class="headerlink" href="#lutils.plot.Labels.nut" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for turbulence viscosity ($nu_t$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plot.Labels.omega">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">omega</span></span><a class="headerlink" href="#lutils.plot.Labels.omega" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for specific dissipation rate of $k$ ($omega$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plot.Labels.velocity">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#lutils.plot.Labels.velocity" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for velocity plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
 </dd>
 </dl>
 </dd></dl>

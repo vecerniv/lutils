@@ -166,9 +166,9 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="56">        <span class="c1"># Return dict with labels</span>
 </span><span data-line="57">        <span class="k">return</span> <span class="n">parse_yaml_config</span><span class="p">(</span><span class="n">label_path</span><span class="p">)</span>
 </span><span data-line="58">
-<div class="viewcode-block" id="FoamPlot.add_data">
-<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.add_data">[docs]</a>
-</span><span data-line="59">    <span class="k">def</span><span class="w"> </span><span class="nf">add_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+<div class="viewcode-block" id="FoamPlot.data_add">
+<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.data_add">[docs]</a>
+</span><span data-line="59">    <span class="k">def</span><span class="w"> </span><span class="nf">data_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
 </span><span data-line="60">                 <span class="n">case</span><span class="p">:</span> <span class="n">FoamCase</span><span class="p">,</span>
 </span><span data-line="61">                 <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
 </span><span data-line="62">                 <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -187,10 +187,10 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="75">        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span></div>
 
 </span><span data-line="76">
-<div class="viewcode-block" id="FoamPlot.del_data">
-<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.del_data">[docs]</a>
-</span><span data-line="77">    <span class="k">def</span><span class="w"> </span><span class="nf">del_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="78">                 <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<div class="viewcode-block" id="FoamPlot.data_delete">
+<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.data_delete">[docs]</a>
+</span><span data-line="77">    <span class="k">def</span><span class="w"> </span><span class="nf">data_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="78">                    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="79"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span data-line="80"><span class="sd">        Removes a specific dataset from the plotting queue.</span>
 </span><span data-line="81">
