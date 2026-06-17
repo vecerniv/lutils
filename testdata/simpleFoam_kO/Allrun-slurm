@@ -1,0 +1,39 @@
+#!/bin/bash
+# Name of the job
+#SBATCH -J pipe-medium-simple
+# Partition to use
+#SBATCH -p express
+# Time limit. Often not needed as there are defaults,
+#SBATCH -t 6:00:00
+# Nodelist
+#SBATCH -x kraken-l[1-4]
+# Number of processes
+#SBATCH -n 1
+#SBATCH -N 1
+
+# set openFoam environment
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Clear old IC
+rm -rf 0
+
+# create base mesh
+cp -r ../mesh/simple/constant/polyMesh constant/.
+
+# copy IC
+mkdir -p 0
+cp -rf 0.org/* 0
+
+# create files for postprocessing
+paraFoam -touch
+
+# get the solver application
+application=`getApplication`
+
+# run the application
+runApplication $application
+
+# write fields
+runApplication readAndWriteVelocity
+runApplication readAndWriteTurbulenceFields omega
+runApplication readAndWriteSigma

@@ -1,0 +1,52 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+Build  : 8-1c9b5879390b
+Exec   : readAndWriteHFDIBSigma
+Date   : May 20 2026
+Time   : 08:03:21
+Host   : "078593a7dc9a"
+PID    : 181
+I/O    : uncollated
+Case   : /home/openfoam/bachelors/tests/recomputeOfShamePipe/msi/medium/openHFDIBRANS_kO
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create mesh for time = 3000
+
+Reading field U
+
+Reading field phi
+
+Selecting incompressible transport model Newtonian
+Selecting turbulence model type HFDIBRAS
+Selecting HFDIBRAS turbulence model HFDIBKOmega
+bounding k, min: 2.220446049e-16 max: 264.8288868 average: 10.04926851
+HFDIBRAS
+{
+    HFDIBRASModel   HFDIBKOmega;
+    turbulence      on;
+    printCoeffs     on;
+    disGSurfaceType setValue;
+    disGBoundaryValue 1;
+    kSurfaceType    setValue;
+    kBoundaryValue  0;
+    tolKEqn         1e-08;
+    betaStar        0.09;
+    beta            0.072;
+    gamma           0.52;
+    alphaK          0.5;
+    alphaOmega      0.5;
+}
+
+End
+

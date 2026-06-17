@@ -1,0 +1,42 @@
+/*---------------------------------------------------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  8
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+Build  : 8-1c9b5879390b
+Exec   : createPatch -overwrite -dict system/createPatchDictNewPatch
+Date   : May 20 2026
+Time   : 07:51:22
+Host   : "078593a7dc9a"
+PID    : 171
+I/O    : uncollated
+Case   : /home/openfoam/bachelors/tests/recomputeOfShamePipe/msi/medium/openHFDIBRANS_kO
+nProcs : 1
+sigFpe : Enabling floating point exception trapping (FOAM_SIGFPE).
+fileModificationChecking : Monitoring run-time modified files using timeStampMaster (fileModificationSkew 10)
+allowSystemOperations : Allowing user-supplied system call operations
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+Create time
+
+Create polyMesh for time = 0
+
+Reading createPatchDict
+
+Patch 'wallInsideLambda' already exists.  Only moving patch faces - type will remain the same
+
+Read 876 faces from faceSet bFacesInsideLambda
+
+Doing topology modification to order faces.
+
+Not synchronising points.
+
+Removing patches with no faces in them.
+
+No patches removed.
+Writing repatched mesh to 0
+
+End
+
