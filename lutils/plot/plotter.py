@@ -3,8 +3,7 @@ import matplotlib.figure as fgr
 from pathlib import Path
 from typing import cast
 
-from lutils.core.data import FoamCase
-from lutils.utils.misc import check_dir
+from lutils.core.case import FoamCase
 from lutils.io.parser import parse_yaml_config
 
 

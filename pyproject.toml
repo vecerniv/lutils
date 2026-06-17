@@ -4,18 +4,19 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "lutils"
-version = "1.0.0"
+version = "1.1.0"
 description = "A Python library for managing and post-processing OpenFOAM cases."
-requires-python = ">=3.10"
+requires-python = ">=3.12,<3.13"
 readme = "README.md"
 dependencies = [
     "numpy",
     "matplotlib",
-    "pyyaml"
+    "pyyaml",
+    "polars>=1.41.2",
 ]
 
 [project.urls]
-Homepage = "https://github.com/Eriazen/lutils"
+Homepage = "https://github.com/vecerniv/lutils"
 
 [tool.setuptools.packages]
 find = {}
