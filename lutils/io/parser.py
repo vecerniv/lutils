@@ -3,7 +3,7 @@ import numpy as np
 import yaml
 
 from lutils.core.types import DataFrame
-from lutils.plt_cfg.labels import Labels
+from lutils.plot.labels import Labels
 
 
 def parse_internal_field(path: Path) -> DataFrame:

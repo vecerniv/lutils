@@ -1,5 +1,3 @@
-
-
 class Labels:
     """
     A container for preset plot label configurations.
@@ -8,7 +6,6 @@ class Labels:
     field variables (Velocity, k, nut, epsilon, omega), containing
     pre-formatted LaTeX strings for titles and axis labels.
     """
-
     def __init__(self):
         self._velocity = {
             'title': 'Velocity profile',
@@ -26,12 +23,12 @@ class Labels:
             'ylabel': '$\\nu_t$ / $m^{2} \\cdot s^{-1}$'
         }
         self._epsilon = {
-            'title': 'Turbulence dissipation profile',
+            'title': 'Average dissipation of turbulence kinetic energy profile',
             'xlabel': '$y$ / $-$',
             'ylabel': '$\\varepsilon$ / $m^{2} \\cdot s^{-3}$'
         }
         self._omega = {
-            'title': 'Specific trubulence dissipation rate profile',
+            'title': 'Specific dissipation rate of turbulence kinetic energy profile',
             'xlabel': '$y$ / $-$',
             'ylabel': '$\\omega$ / s^{-1}$'
         }
@@ -43,7 +40,7 @@ class Labels:
 
     @property
     def k(self):
-        """dict[str, str]: Configuration for kinetic energy ($k$) plots."""
+        """dict[str, str]: Configuration for turbulence kinetic energy ($k$) plots."""
         return self._k
 
     @property
@@ -53,10 +50,10 @@ class Labels:
 
     @property
     def epsilon(self):
-        """dict[str, str]: Configuration for dissipation ($\\varepsilon$) plots."""
+        """dict[str, str]: Configuration for average dissipation of $k$ ($\\varepsilon$) plots."""
         return self._epsilon
 
     @property
     def omega(self):
-        """dict[str, str]: Configuration for specific dissipation rate ($\\omega$) plots."""
+        """dict[str, str]: Configuration for specific dissipation rate of $k$ ($\\omega$) plots."""
         return self._omega

@@ -56,7 +56,7 @@ class FoamPlot:
         # Return dict with labels
         return parse_yaml_config(label_path)
 
-    def add_data(self,
+    def data_add(self,
                  case: FoamCase,
                  field_name: str,
                  label: str) -> None:
@@ -74,8 +74,8 @@ class FoamPlot:
         """
         self._plot_data[label] = case.fields[field_name]
 
-    def del_data(self,
-                 label: str) -> None:
+    def data_delete(self,
+                    label: str) -> None:
         """
         Removes a specific dataset from the plotting queue.
 
