@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en" data-accent-color="violet" data-content_root="../../../">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"><title>lutils.utils.misc - lutils documentation</title><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" /><script>
+    function setColorMode(t){let e=document.documentElement;e.setAttribute("data-color-mode",t);let a=window.matchMedia&&window.matchMedia("(prefers-color-scheme: dark)").matches,s=t;"auto"===t&&(s=a?"dark":"light"),"light"===s?(e.classList.remove("dark"),e.classList.add("light")):(e.classList.remove("light"),e.classList.add("dark"))}
+    setColorMode(localStorage._theme||"auto");
+  </script><link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=e1a1ceaf" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/shibuya.css?v=14737038" />
+    <link media="print" rel="stylesheet" type="text/css" href="../../../_static/print.css?v=20ff2c19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sy-f-text: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+  --sy-f-heading: "Inter", var(--sy-f-sys), var(--sy-f-cjk), sans-serif;
+}
+</style>
+    <meta property="og:type" content="website"/><meta property="og:title" content="lutils.utils.misc"/>
+    <meta name="twitter:card" content="summary"/>
+  </head>
+<body><div class="sy-head">
+  <div class="sy-head-blur"></div>
+  <div class="sy-head-inner sy-container mx-auto">
+    <a class="sy-head-brand" href="../../../index.html">
+      
+      
+      <strong>lutils</strong>
+    </a>
+    <div class="sy-head-nav" id="head-nav">
+      <nav class="sy-head-links"></nav>
+      <div class="sy-head-extra flex items-center print:hidden"><form class="searchbox flex items-center" action="../../../search.html" method="get">
+  <input type="text" name="q" placeholder="Search" />
+  <kbd>/</kbd>
+</form><div class="sy-head-socials"></div></div>
+    </div>
+    <div class="sy-head-actions flex items-center shrink-0 print:hidden"><button class="js-theme theme-switch flex items-center"
+data-aria-auto="Switch to light color mode"
+data-aria-light="Switch to dark color mode"
+data-aria-dark="Switch to auto color mode">
+<i class="i-lucide theme-icon"></i>
+</button><button class="md:hidden flex items-center js-menu" aria-label="Menu" type="button" aria-controls="head-nav" aria-expanded="false">
+        <div class="hamburger">
+          <span class="hamburger_1"></span>
+          <span class="hamburger_2"></span>
+          <span class="hamburger_3"></span>
+        </div>
+      </button>
+    </div>
+  </div>
+</div>
+<div class="sy-page sy-container flex mx-auto">
+  <aside id="lside" class="sy-lside md:w-72 md:shrink-0 print:hidden">
+    <div class="sy-lside-inner md:sticky">
+      <div class="sy-scrollbar p-6">
+        <div class="globaltoc" data-expand-depth="0"><p class="caption" role="heading" aria-level="3"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../core.html">Core Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../io.html">IO Utilities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot.html">Plotting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plt_cfg.html">Plot Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">Helper Functions</a></li>
+</ul>
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="lside-overlay js-menu" role="button" aria-label="Close left sidebar" aria-controls="lside" aria-expanded="false"></div>
+  <aside id="rside" class="sy-rside pb-3 w-64 shrink-0 order-last">
+    <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
+      <i class="i-lucide close"></i>
+    </button>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+  </aside>
+  <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
+  <main class="sy-main w-full max-sm:max-w-full print:pt-6">
+<div class="sy-breadcrumbs" role="navigation">
+  <div class="sy-breadcrumbs-inner flex items-center">
+    <div class="md:hidden mr-3">
+      <button class="js-menu" aria-label="Menu" type="button" aria-controls="lside" aria-expanded="false">
+        <i class="i-lucide menu"></i>
+      </button>
+    </div>
+    <ol class="flex-1" itemscope itemtype="https://schema.org/BreadcrumbList"><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../../index.html"><span itemprop="name">lutils</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="1" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <a itemprop="item" href="../../index.html"><span itemprop="name">Module code</span></a>
+        <span>/</span>
+        <meta itemprop="position" content="2" />
+      </li><li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+        <strong itemprop="name">lutils.utils.misc</strong>
+        <meta itemprop="position" content="3" />
+      </li></ol>
+    <div class="xl:hidden ml-1">
+      <button class="js-menu" aria-label="Show table of contents" type="button" aria-controls="rside"
+        aria-expanded="false">
+        <i class="i-lucide outdent"></i>
+      </button>
+    </div>
+  </div>
+</div><div class="flex flex-col break-words justify-between">
+      <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
+        <article class="yue" role="main">
+          <h1>Source code for lutils.utils.misc</h1><div class="highlight"><pre>
+<span></span><span data-line="1"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+</span><span data-line="3"><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
+</span><span data-line="4">
+</span><span data-line="5">
+</span><span data-line="6"><span class="c1"># load provided OpenFoam version</span>
+</span><span data-line="7"><span class="k">def</span><span class="w"> </span><span class="nf">load_of</span><span class="p">(</span><span class="n">of_bin</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="8"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="9"><span class="sd">    Sources or executes the specified OpenFOAM binary/environment script.</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="sd">    Parameters</span>
+</span><span data-line="12"><span class="sd">    ----------</span>
+</span><span data-line="13"><span class="sd">    of_bin : str</span>
+</span><span data-line="14"><span class="sd">        The file path to the OpenFOAM binary or sourcing script.</span>
+</span><span data-line="15"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="16">    <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">of_bin</span><span class="p">)</span>
+</span><span data-line="17">
+</span><span data-line="18">
+</span><span data-line="19"><span class="c1"># Check if path exists, create dir if not</span>
+</span><span data-line="20"><span class="k">def</span><span class="w"> </span><span class="nf">check_dir</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="21"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="22"><span class="sd">    Ensures that a directory exists, creating it if necessary.</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="sd">    Parameters</span>
+</span><span data-line="25"><span class="sd">    ----------</span>
+</span><span data-line="26"><span class="sd">    path : Path</span>
+</span><span data-line="27"><span class="sd">        The directory path to check or create.</span>
+</span><span data-line="28"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="29">    <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span data-line="30">        <span class="n">Path</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</span><span data-line="31">
+</span><span data-line="32">
+</span><span data-line="33"><span class="c1"># Check if input is of type list</span>
+<div class="viewcode-block" id="is_list_str">
+<a class="viewcode-back" href="../../../utils.html#lutils.utils.is_list_str">[docs]</a>
+</span><span data-line="34"><span class="k">def</span><span class="w"> </span><span class="nf">is_list_str</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+</span><span data-line="35"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="36"><span class="sd">    Validates if the input key is a list composed exclusively of strings.</span>
+</span><span data-line="37">
+</span><span data-line="38"><span class="sd">    Parameters</span>
+</span><span data-line="39"><span class="sd">    ----------</span>
+</span><span data-line="40"><span class="sd">    key : Any</span>
+</span><span data-line="41"><span class="sd">        The object to validate.</span>
+</span><span data-line="42">
+</span><span data-line="43"><span class="sd">    Returns</span>
+</span><span data-line="44"><span class="sd">    -------</span>
+</span><span data-line="45"><span class="sd">    bool</span>
+</span><span data-line="46"><span class="sd">        True if `key` is a list of strings, False otherwise.</span>
+</span><span data-line="47"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="48">    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">key</span><span class="p">)</span></div>
+
+</span><span data-line="49">
+</span><span data-line="50">
+</span><span data-line="51"><span class="c1"># find OpenFOAM version based on log.* files</span>
+<div class="viewcode-block" id="get_of_version">
+<a class="viewcode-back" href="../../../utils.html#lutils.utils.get_of_version">[docs]</a>
+</span><span data-line="52"><span class="k">def</span><span class="w"> </span><span class="nf">get_of_version</span><span class="p">(</span><span class="n">case_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="53"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="54"><span class="sd">    Extracts the OpenFOAM version number from the case&#39;s solver log.</span>
+</span><span data-line="55">
+</span><span data-line="56"><span class="sd">    This function first identifies the solver used via &#39;system/controlDict&#39;,</span>
+</span><span data-line="57"><span class="sd">    then searches the corresponding log file for the version string.</span>
+</span><span data-line="58">
+</span><span data-line="59"><span class="sd">    Parameters</span>
+</span><span data-line="60"><span class="sd">    ----------</span>
+</span><span data-line="61"><span class="sd">    case_path : Path</span>
+</span><span data-line="62"><span class="sd">        The root directory of the OpenFOAM case.</span>
+</span><span data-line="63">
+</span><span data-line="64"><span class="sd">    Returns</span>
+</span><span data-line="65"><span class="sd">    -------</span>
+</span><span data-line="66"><span class="sd">    int or None</span>
+</span><span data-line="67"><span class="sd">        The major version number if found (e.g., 2312, 11), otherwise None.</span>
+</span><span data-line="68">
+</span><span data-line="69"><span class="sd">    Raises</span>
+</span><span data-line="70"><span class="sd">    ------</span>
+</span><span data-line="71"><span class="sd">    ValueError</span>
+</span><span data-line="72"><span class="sd">        If &#39;system/controlDict&#39; is missing or if the solver name cannot be found within it.</span>
+</span><span data-line="73"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="74">    <span class="n">path</span> <span class="o">=</span> <span class="n">case_path</span> <span class="o">/</span> <span class="s1">&#39;system/controlDict&#39;</span>
+</span><span data-line="75">    <span class="c1"># Precompile regex to save time</span>
+</span><span data-line="76">    <span class="n">ver</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;Version:\s+(\S+)&#39;</span><span class="p">)</span>
+</span><span data-line="77">    <span class="c1"># Check if controlDict exists, find solver name</span>
+</span><span data-line="78">    <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span data-line="79">        <span class="n">solver_log</span> <span class="o">=</span> <span class="n">find_in_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;application&#39;</span><span class="p">)</span>
+</span><span data-line="80">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="81">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid file path: controlDict not found.&#39;</span><span class="p">)</span>
+</span><span data-line="82">    <span class="c1"># Check if solver name found, join path</span>
+</span><span data-line="83">    <span class="k">if</span> <span class="n">solver_log</span><span class="p">:</span>
+</span><span data-line="84">        <span class="n">log_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">case_path</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;log.</span><span class="si">{</span><span class="n">solver_log</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;;&#39;</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="85">    <span class="k">else</span><span class="p">:</span>
+</span><span data-line="86">        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Solver name not found in controlDict&#39;</span><span class="p">)</span>
+</span><span data-line="87">    <span class="c1"># Open solver log and find OpenFOAMa version</span>
+</span><span data-line="88">    <span class="k">with</span> <span class="n">log_path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="89">        <span class="c1"># Regex OpenFOAM version</span>
+</span><span data-line="90">        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="91">            <span class="n">found</span> <span class="o">=</span> <span class="n">ver</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span data-line="92">            <span class="c1"># If found, return version cast to int</span>
+</span><span data-line="93">            <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+</span><span data-line="94">                <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">found</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</span><span data-line="95">        <span class="k">return</span> <span class="kc">None</span></div>
+
+</span><span data-line="96">
+</span><span data-line="97">
+<div class="viewcode-block" id="find_in_file">
+<a class="viewcode-back" href="../../../utils.html#lutils.utils.find_in_file">[docs]</a>
+</span><span data-line="98"><span class="k">def</span><span class="w"> </span><span class="nf">find_in_file</span><span class="p">(</span><span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+</span><span data-line="99">                 <span class="n">str_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="100">                 <span class="n">return_next</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="101"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="102"><span class="sd">    Searches for a specific string pattern within a file.</span>
+</span><span data-line="103">
+</span><span data-line="104"><span class="sd">    Parameters</span>
+</span><span data-line="105"><span class="sd">    ----------</span>
+</span><span data-line="106"><span class="sd">    path : Path</span>
+</span><span data-line="107"><span class="sd">        The path to the target file.</span>
+</span><span data-line="108"><span class="sd">    str_id : str</span>
+</span><span data-line="109"><span class="sd">        The string pattern or regex to search for.</span>
+</span><span data-line="110"><span class="sd">    return_next : bool, optional</span>
+</span><span data-line="111"><span class="sd">        If True, returns the non-whitespace string immediately following the match.</span>
+</span><span data-line="112"><span class="sd">        If False, returns True immediately upon finding a match. Default is True.</span>
+</span><span data-line="113">
+</span><span data-line="114"><span class="sd">    Returns</span>
+</span><span data-line="115"><span class="sd">    -------</span>
+</span><span data-line="116"><span class="sd">    str or bool or None</span>
+</span><span data-line="117"><span class="sd">        - If `return_next` is True: The string following the match, or None if not found.</span>
+</span><span data-line="118"><span class="sd">        - If `return_next` is False: True if the match exists, False otherwise.</span>
+</span><span data-line="119"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="120">    <span class="c1"># Precompile regex to save time</span>
+</span><span data-line="121">    <span class="n">regex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">str_id</span><span class="p">)</span>
+</span><span data-line="122">    <span class="nb">next</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\S+&#39;</span><span class="p">)</span>
+</span><span data-line="123">
+</span><span data-line="124">    <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="125">        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="126">            <span class="c1"># Search file for input string</span>
+</span><span data-line="127">            <span class="n">match</span> <span class="o">=</span> <span class="n">regex</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span data-line="128">            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+</span><span data-line="129">                <span class="k">if</span> <span class="n">return_next</span><span class="p">:</span>
+</span><span data-line="130">                    <span class="c1"># If return_next, search for the next str and return</span>
+</span><span data-line="131">                    <span class="n">rest</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span>
+</span><span data-line="132">                    <span class="n">next_match</span> <span class="o">=</span> <span class="nb">next</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">rest</span><span class="p">)</span>
+</span><span data-line="133">                    <span class="k">return</span> <span class="n">next_match</span><span class="o">.</span><span class="n">group</span><span class="p">()</span> <span class="k">if</span> <span class="n">next_match</span> <span class="k">else</span> <span class="kc">None</span>
+</span><span data-line="134">                <span class="k">return</span> <span class="kc">True</span>
+</span><span data-line="135">    <span class="c1"># If no match return None or False</span>
+</span><span data-line="136">    <span class="k">return</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">return_next</span> <span class="k">else</span> <span class="kc">False</span></div>
+
+</span></pre></div>
+        </article><button class="back-to-top" type="button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+  </svg>
+  <span>Back to top</span>
+</button><div class="navigation flex print:hidden"></div></div>
+    </div>
+  </main>
+</div>
+<footer class="sy-foot">
+  <div class="sy-foot-inner sy-container mx-auto">
+    <div class="sy-foot-reserved md:flex justify-between items-center">
+      <div class="sy-foot-copyright"><p>2025, eriazen</p>
+  
+  <p>
+    Made with
+    
+    <a href="https://www.sphinx-doc.org/">Sphinx</a> and
+    
+    <a href="https://shibuya.lepture.com">Shibuya theme</a>.
+  </p>
+</div>
+      <div class="sy-foot-socials"></div>
+    </div>
+  </div>
+</footer>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+      <script src="../../../_static/shibuya.js?v=c1cf1a6b"></script></body>
+</html>

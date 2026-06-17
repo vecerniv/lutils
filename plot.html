@@ -72,7 +72,15 @@ data-aria-dark="Switch to auto color mode">
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-lucide close"></i>
     </button>
-    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#lutils.plot.FoamPlot"><code class="docutils literal notranslate"><span class="pre">FoamPlot</span></code></a><ul>
+<li><a class="reference internal" href="#lutils.plot.FoamPlot.add_data"><code class="docutils literal notranslate">add_data()</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.FoamPlot.del_data"><code class="docutils literal notranslate">del_data()</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plot.FoamPlot.plot_profile"><code class="docutils literal notranslate">plot_profile()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
   <main class="sy-main w-full max-sm:max-w-full print:pt-6">
@@ -101,8 +109,76 @@ data-aria-dark="Switch to auto color mode">
 </div><div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
         <article class="yue" role="main">
-          <section id="plotting">
-<h1>Plotting<a class="headerlink" href="#plotting" title="Link to this heading">¶</a></h1>
+          <section id="module-lutils.plot">
+<span id="plotting"></span><h1>Plotting<a class="headerlink" href="#module-lutils.plot" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lutils.plot.FoamPlot">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">lutils.plot.</span></span><span class="sig-name descname"><span class="pre">FoamPlot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plot_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'./plots/'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Base class for plotting OpenFOAM post-processing data.</p>
+<p>This class manages the configuration, storage, and rendering of plots
+derived from OpenFOAM cases. It handles data aggregation from multiple
+cases and output directory management.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plot_dir</strong> (<em>str</em><em>, </em><em>optional</em>) – The directory path where generated plots and CSV data will be saved.
+Default is ‘./plots/’.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="lutils.plot.FoamPlot.add_data">
+<span class="sig-name descname"><span class="pre">add_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">case</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="core.html#lutils.core.FoamCase" title="lutils.core.case.FoamCase"><span class="pre">FoamCase</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">field_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot.add_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot.add_data" title="Link to this definition">¶</a></dt>
+<dd><p>Registers field data from a specific OpenFOAM case for plotting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>case</strong> (<a class="reference internal" href="core.html#lutils.core.FoamCase" title="lutils.core.FoamCase"><em>FoamCase</em></a>) – The OpenFOAM case object containing the data.</p></li>
+<li><p><strong>field_name</strong> (<em>str</em>) – The name of the field variable to extract (e.g., ‘U’, ‘p’).</p></li>
+<li><p><strong>label</strong> (<em>str</em>) – The legend label to assign to this dataset in the plot.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lutils.plot.FoamPlot.del_data">
+<span class="sig-name descname"><span class="pre">del_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot.del_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot.del_data" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a specific dataset from the plotting queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>label</strong> (<em>str</em>) – The label of the dataset to remove.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lutils.plot.FoamPlot.plot_profile">
+<span class="sig-name descname"><span class="pre">plot_profile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">field</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_axis</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_tol</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'velocity'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">figure_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">out_csv</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/lutils/plot/plotter.html#FoamPlot.plot_profile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plot.FoamPlot.plot_profile" title="Link to this definition">¶</a></dt>
+<dd><p>Generates a profile plot by extracting data along a geometric slice.</p>
+<p>This method filters 3D field data to find cells close to a specific
+coordinate (‘position_value’) along a ‘position_axis’, effectively
+creating a line plot through the domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_file</strong> (<em>str</em>) – The filename for the saved plot (e.g., ‘profile.png’).</p></li>
+<li><p><strong>field</strong> (<em>str</em>) – The specific scalar component of the field to plot.</p></li>
+<li><p><strong>data_axis</strong> (<em>str</em>) – The axis to plot against (usually the independent variable axis).</p></li>
+<li><p><strong>position_axis</strong> (<em>str</em>) – The axis used to slice the domain (the fixed coordinate axis).</p></li>
+<li><p><strong>position_value</strong> (<em>float</em>) – The coordinate value along <cite>position_axis</cite> where the slice is taken.</p></li>
+<li><p><strong>position_tol</strong> (<em>float</em>) – The tolerance width around <cite>position_value</cite> to include cells.</p></li>
+<li><p><strong>labels</strong> (<em>str</em><em>, </em><em>optional</em>) – The label configuration preset or path. Default is ‘velocity’.</p></li>
+<li><p><strong>style</strong> (<em>str</em><em>, </em><em>optional</em>) – The matplotlib style sheet to use. Default is ‘lutils.plt_cfg.lutils’.</p></li>
+<li><p><strong>figure_id</strong> (<em>str</em><em> or </em><em>int</em><em> or </em><em>None</em><em>, </em><em>optional</em>) – The unique identifier for the figure. If None, a new figure is created.</p></li>
+<li><p><strong>out_csv</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, exports the sliced data to CSV files in the plot directory.
+Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article><button class="back-to-top" type="button">

@@ -72,7 +72,17 @@ data-aria-dark="Switch to auto color mode">
     <button class="rside-close js-menu xl:hidden" aria-label="Close Table of Contents" type="button" aria-controls="rside" aria-expanded="false">
       <i class="i-lucide close"></i>
     </button>
-    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
+    <div class="sy-scrollbar sy-rside-inner px-6 xl:top-16 xl:sticky xl:pl-0 pt-6 pb-4"><div class="localtoc"><h3>On this page</h3><ul>
+<li><a class="reference internal" href="#lutils.plt_cfg.Labels"><code class="docutils literal notranslate"><span class="pre">Labels</span></code></a><ul>
+<li><a class="reference internal" href="#lutils.plt_cfg.Labels.epsilon"><code class="docutils literal notranslate">epsilon</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plt_cfg.Labels.k"><code class="docutils literal notranslate">k</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plt_cfg.Labels.nut"><code class="docutils literal notranslate">nut</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plt_cfg.Labels.omega"><code class="docutils literal notranslate">omega</span></code></a></li>
+<li><a class="reference internal" href="#lutils.plt_cfg.Labels.velocity"><code class="docutils literal notranslate">velocity</span></code></a></li>
+</ul>
+</li>
+</ul>
+</div><div id="ethical-ad-placement" data-ea-publisher="readthedocs"></div></div>
   </aside>
   <div class="rside-overlay js-menu" role="button" aria-label="Close Table of Contents" aria-controls="rside" aria-expanded="false"></div>
   <main class="sy-main w-full max-sm:max-w-full print:pt-6">
@@ -101,8 +111,73 @@ data-aria-dark="Switch to auto color mode">
 </div><div class="flex flex-col break-words justify-between">
       <div class="min-w-0 max-w-6xl px-6 pb-6 pt-8 xl:px-12">
         <article class="yue" role="main">
-          <section id="plot-configuration">
-<h1>Plot Configuration<a class="headerlink" href="#plot-configuration" title="Link to this heading">¶</a></h1>
+          <section id="module-lutils.plt_cfg">
+<span id="plot-configuration"></span><h1>Plot Configuration<a class="headerlink" href="#module-lutils.plt_cfg" title="Link to this heading">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="lutils.plt_cfg.Labels">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">lutils.plt_cfg.</span></span><span class="sig-name descname"><span class="pre">Labels</span></span><a class="reference internal" href="_modules/lutils/plt_cfg/labels.html#Labels"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#lutils.plt_cfg.Labels" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A container for preset plot label configurations.</p>
+<p>This class provides a set of standard dictionaries for common OpenFOAM
+field variables (Velocity, k, nut, epsilon, omega), containing
+pre-formatted LaTeX strings for titles and axis labels.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plt_cfg.Labels.epsilon">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">epsilon</span></span><a class="headerlink" href="#lutils.plt_cfg.Labels.epsilon" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for dissipation ($varepsilon$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plt_cfg.Labels.k">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">k</span></span><a class="headerlink" href="#lutils.plt_cfg.Labels.k" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for kinetic energy ($k$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plt_cfg.Labels.nut">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">nut</span></span><a class="headerlink" href="#lutils.plt_cfg.Labels.nut" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for turbulence viscosity ($nu_t$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plt_cfg.Labels.omega">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">omega</span></span><a class="headerlink" href="#lutils.plt_cfg.Labels.omega" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for specific dissipation rate ($omega$) plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="lutils.plt_cfg.Labels.velocity">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">velocity</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#lutils.plt_cfg.Labels.velocity" title="Link to this definition">¶</a></dt>
+<dd><p>Configuration for velocity plots.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict[str, str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
         </article><button class="back-to-top" type="button">
