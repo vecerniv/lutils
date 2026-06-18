@@ -17,17 +17,14 @@ Quickstart
 2. Or directly from GitHub:
 
 .. code-block:: bash
-   
-   pip install git+https://github.com/Eriazen/lutils.git
+
+   pip install git+https://github.com/vecerniv/lutils.git
 
 3. Create your own script based on the reference or check out the examples!
 
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
-   
+
    core
-   io
    plot
-   plt_cfg
-   utils
