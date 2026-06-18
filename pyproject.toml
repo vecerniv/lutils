@@ -21,3 +21,9 @@ dependencies = [
 
 [project.urls]
 Homepage = "https://github.com/vecerniv/lutils"
+
+[dependency-groups]
+dev = [
+    "flake8>=7.3.0",
+    "pytest>=9.1.0",
+]
