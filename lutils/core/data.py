@@ -17,12 +17,12 @@ class FieldData:
                  file_path: Path,
                  field_name: str) -> None:
         # Parse data into DataFrame
-        self._internal_field = pl.scan_csv(source=file_path, has_header=True)
+        internal_field = pl.scan_csv(source=file_path, has_header=True)
         self.name = field_name
 
         # Filter relevant columns
         keys = ['x', 'y', 'z', self.name]
-        self.data = self._internal_field.select(keys).collect()
+        self.data = internal_field.select(keys).collect()
 
     def get_cells(self,
                   position_axis: str,
@@ -48,10 +48,12 @@ class FieldData:
         DataFrame
             A DataFrame containing the filtered cells, sorted by `data_axis`.
         """
+        position_value = float(position_value)
+        tol = float(tol)
+        print(self.data)
         filtered_and_sorted = self.data.filter(
-                (pl.col(position_axis) - position_value).abs() < tol
+                ((pl.col(position_axis) - position_value).abs() < tol)
             ).sort(data_axis)
-
         return filtered_and_sorted
 
 class ResidualData:

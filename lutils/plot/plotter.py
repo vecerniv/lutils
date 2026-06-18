@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import matplotlib.figure as fgr
+import yaml
 from pathlib import Path
 from typing import cast
 
 from lutils.core.case import FoamCase
-from lutils.io.parser import parse_yaml_config
+from lutils.plot.labels import Labels
 
 
 class FoamPlot:
@@ -31,9 +32,8 @@ class FoamPlot:
             self._plot_dir.mkdir()
 
     def _get_plot_config(self,
-                         label_path: str
-                         #style: str
-                         ) -> dict[str, str]:
+                         label_path: str,
+                         style: str = "lutils.profile") -> dict[str, str]:
         """
         Configures the matplotlib style and plot labels from a config file.
 
@@ -49,12 +49,41 @@ class FoamPlot:
         -------
         dict : [str, str]
             The dictionary with labels.
+
+        Raises
+        ------
+        FileNotFoundError
+            If `cfg_path` does not match a preset and the provided path does not exist.
         """
         # Set style
-        #plt.style.use(style)
+        plt.style.use(style)
+
+        # Check if input matches any preset labels
+        labels = Labels()
+        match label_path:
+            case 'velocity':
+                return labels.velocity
+            case 'k':
+                return labels.k
+            case 'nut':
+                return labels.nut
+            case 'epsilon':
+                return labels.epsilon
+            case 'omega':
+                return labels.omega
+            case _:
+                pass
+
+        # Otherwise load labels from file
+        path = Path(label_path)
+        if not path.exists():
+            raise FileNotFoundError(f'Config file not found at path: {path}')
+
+        with path.open() as f:
+            config = yaml.safe_load(f)
 
         # Return dict with labels
-        return parse_yaml_config(label_path)
+        return config
 
     def data_add(self,
                  case: FoamCase,
@@ -147,10 +176,11 @@ class FoamPlot:
         for key, value in self._plot_data.items():
             trimmed = value.get_cells(
                 position_axis, position_value, data_axis, position_tol)
+            print(trimmed)
             ax.scatter(trimmed[data_axis],
                        trimmed[field], label=key)
             if out_csv:
-                trimmed.to_csv(self._plot_dir / str(key+'.csv'))
+                trimmed.write_csv(file=self._plot_dir / str(key+'.csv'))
 
         fig.legend()
 
