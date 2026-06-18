@@ -50,7 +50,6 @@ class FieldData:
         """
         position_value = float(position_value)
         tol = float(tol)
-        print(self.data)
         filtered_and_sorted = self.data.filter(
                 ((pl.col(position_axis) - position_value).abs() < tol)
             ).sort(data_axis)

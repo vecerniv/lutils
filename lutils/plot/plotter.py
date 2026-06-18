@@ -176,7 +176,6 @@ class FoamPlot:
         for key, value in self._plot_data.items():
             trimmed = value.get_cells(
                 position_axis, position_value, data_axis, position_tol)
-            print(trimmed)
             ax.scatter(trimmed[data_axis],
                        trimmed[field], label=key)
             if out_csv:
