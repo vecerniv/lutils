@@ -108,225 +108,419 @@ data-aria-dark="Switch to auto color mode">
           <h1>Source code for lutils.plot.plotter</h1><div class="highlight"><pre>
 <span></span><span data-line="1"><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
 </span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.figure</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">fgr</span>
-</span><span data-line="3"><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
-</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
-</span><span data-line="6">
-</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">lutils.core.case</span><span class="w"> </span><span class="kn">import</span> <span class="n">FoamCase</span>
-</span><span data-line="8"><span class="kn">from</span><span class="w"> </span><span class="nn">lutils.plot.labels</span><span class="w"> </span><span class="kn">import</span> <span class="n">Labels</span>
-</span><span data-line="9">
+</span><span data-line="3"><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.axes</span><span class="w"> </span><span class="kn">import</span> <span class="n">Axes</span>
+</span><span data-line="4"><span class="kn">from</span><span class="w"> </span><span class="nn">matplotlib.collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">LineCollection</span>
+</span><span data-line="5"><span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+</span><span data-line="7"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
+</span><span data-line="8"><span class="kn">import</span><span class="w"> </span><span class="nn">polars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
+</span><span data-line="9"><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 </span><span data-line="10">
+</span><span data-line="11"><span class="kn">from</span><span class="w"> </span><span class="nn">lutils.core.case</span><span class="w"> </span><span class="kn">import</span> <span class="n">FoamCase</span>
+</span><span data-line="12"><span class="kn">from</span><span class="w"> </span><span class="nn">lutils.plot.labels</span><span class="w"> </span><span class="kn">import</span> <span class="n">Labels</span>
+</span><span data-line="13">
+</span><span data-line="14">
 <div class="viewcode-block" id="FoamPlot">
 <a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot">[docs]</a>
-</span><span data-line="11"><span class="k">class</span><span class="w"> </span><span class="nc">FoamPlot</span><span class="p">:</span>
-</span><span data-line="12"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="13"><span class="sd">    Base class for plotting OpenFOAM post-processing data.</span>
-</span><span data-line="14">
-</span><span data-line="15"><span class="sd">    This class manages the configuration, storage, and rendering of plots</span>
-</span><span data-line="16"><span class="sd">    derived from OpenFOAM cases. It handles data aggregation from multiple</span>
-</span><span data-line="17"><span class="sd">    cases and output directory management.</span>
-</span><span data-line="18">
-</span><span data-line="19"><span class="sd">    Parameters</span>
-</span><span data-line="20"><span class="sd">    ----------</span>
-</span><span data-line="21"><span class="sd">    plot_dir : str, optional</span>
-</span><span data-line="22"><span class="sd">        The directory path where generated plots and CSV data will be saved.</span>
-</span><span data-line="23"><span class="sd">        Default is &#39;./plots/&#39;.</span>
-</span><span data-line="24"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="25">
-</span><span data-line="26">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="27">                 <span class="n">plot_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./plots/&#39;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="28">        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">plot_dir</span><span class="p">)</span>
-</span><span data-line="29">        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="15"><span class="k">class</span><span class="w"> </span><span class="nc">FoamPlot</span><span class="p">:</span>
+</span><span data-line="16">
+</span><span data-line="17"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="18"><span class="sd">    Base class for plotting OpenFOAM post-processing data.</span>
+</span><span data-line="19">
+</span><span data-line="20"><span class="sd">    This class manages the configuration, storage, and rendering of plots</span>
+</span><span data-line="21"><span class="sd">    derived from OpenFOAM cases. It handles data aggregation from multiple</span>
+</span><span data-line="22"><span class="sd">    cases and output directory management.</span>
+</span><span data-line="23">
+</span><span data-line="24"><span class="sd">    Parameters</span>
+</span><span data-line="25"><span class="sd">    ----------</span>
+</span><span data-line="26"><span class="sd">    plot_dir : str, optional</span>
+</span><span data-line="27"><span class="sd">        The directory path where generated plots and CSV data will be saved.</span>
+</span><span data-line="28"><span class="sd">        Default is &#39;./plots/&#39;.</span>
+</span><span data-line="29"><span class="sd">    &quot;&quot;&quot;</span>
 </span><span data-line="30">
-</span><span data-line="31">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-</span><span data-line="32">            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
-</span><span data-line="33">
-</span><span data-line="34">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_plot_config</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="35">                         <span class="n">label_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="36">                         <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lutils.profile&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
-</span><span data-line="37"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="38"><span class="sd">        Configures the matplotlib style and plot labels from a config file.</span>
+</span><span data-line="31">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="32">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="33">        <span class="n">plot_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;./plots/&#39;</span>
+</span><span data-line="34">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="35">
+</span><span data-line="36">        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="37">        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation_data</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="38">        <span class="bp">self</span><span class="o">.</span><span class="n">_residual_data</span> <span class="o">=</span> <span class="p">{}</span>
 </span><span data-line="39">
-</span><span data-line="40"><span class="sd">        Parameters</span>
-</span><span data-line="41"><span class="sd">        ----------</span>
-</span><span data-line="42"><span class="sd">        label_path : str</span>
-</span><span data-line="43"><span class="sd">            The path to a YAML configuration file containing &#39;title&#39;,</span>
-</span><span data-line="44"><span class="sd">            &#39;xlabel&#39;, and &#39;ylabel&#39; keys, or a preset name.</span>
-</span><span data-line="45"><span class="sd">        style : str</span>
-</span><span data-line="46"><span class="sd">            The valid matplotlib style sheet name to apply.</span>
-</span><span data-line="47">
-</span><span data-line="48"><span class="sd">        Returns</span>
-</span><span data-line="49"><span class="sd">        -------</span>
-</span><span data-line="50"><span class="sd">        dict : [str, str]</span>
-</span><span data-line="51"><span class="sd">            The dictionary with labels.</span>
+</span><span data-line="40">        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">plot_dir</span><span class="p">)</span>
+</span><span data-line="41">        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span data-line="42">            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+</span><span data-line="43">
+</span><span data-line="44">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_plot_config</span><span class="p">(</span>
+</span><span data-line="45">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="46">        <span class="n">label_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="47">        <span class="n">style</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="48">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+</span><span data-line="49">
+</span><span data-line="50"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="51"><span class="sd">        Configures the matplotlib style and plot labels from a config file.</span>
 </span><span data-line="52">
-</span><span data-line="53"><span class="sd">        Raises</span>
-</span><span data-line="54"><span class="sd">        ------</span>
-</span><span data-line="55"><span class="sd">        FileNotFoundError</span>
-</span><span data-line="56"><span class="sd">            If `cfg_path` does not match a preset and the provided path does not exist.</span>
-</span><span data-line="57"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="58">        <span class="c1"># Set style</span>
-</span><span data-line="59">        <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+</span><span data-line="53"><span class="sd">        Parameters</span>
+</span><span data-line="54"><span class="sd">        ----------</span>
+</span><span data-line="55"><span class="sd">        label_path : str</span>
+</span><span data-line="56"><span class="sd">            The path to a YAML configuration file containing &#39;title&#39;,</span>
+</span><span data-line="57"><span class="sd">            &#39;xlabel&#39;, and &#39;ylabel&#39; keys, or a preset name.</span>
+</span><span data-line="58"><span class="sd">        style : str</span>
+</span><span data-line="59"><span class="sd">            The valid matplotlib style sheet name to apply.</span>
 </span><span data-line="60">
-</span><span data-line="61">        <span class="c1"># Check if input matches any preset labels</span>
-</span><span data-line="62">        <span class="n">labels</span> <span class="o">=</span> <span class="n">Labels</span><span class="p">()</span>
-</span><span data-line="63">        <span class="k">match</span> <span class="n">label_path</span><span class="p">:</span>
-</span><span data-line="64">            <span class="k">case</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span>
-</span><span data-line="65">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">velocity</span>
-</span><span data-line="66">            <span class="k">case</span> <span class="s1">&#39;k&#39;</span><span class="p">:</span>
-</span><span data-line="67">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">k</span>
-</span><span data-line="68">            <span class="k">case</span> <span class="s1">&#39;nut&#39;</span><span class="p">:</span>
-</span><span data-line="69">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">nut</span>
-</span><span data-line="70">            <span class="k">case</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">:</span>
-</span><span data-line="71">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">epsilon</span>
-</span><span data-line="72">            <span class="k">case</span> <span class="s1">&#39;omega&#39;</span><span class="p">:</span>
-</span><span data-line="73">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">omega</span>
-</span><span data-line="74">            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
-</span><span data-line="75">                <span class="k">pass</span>
-</span><span data-line="76">
-</span><span data-line="77">        <span class="c1"># Otherwise load labels from file</span>
-</span><span data-line="78">        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">label_path</span><span class="p">)</span>
-</span><span data-line="79">        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-</span><span data-line="80">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Config file not found at path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span data-line="81">
-</span><span data-line="82">        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-</span><span data-line="83">            <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
-</span><span data-line="84">
-</span><span data-line="85">        <span class="c1"># Return dict with labels</span>
-</span><span data-line="86">        <span class="k">return</span> <span class="n">config</span>
-</span><span data-line="87">
-<div class="viewcode-block" id="FoamPlot.data_add">
-<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.data_add">[docs]</a>
-</span><span data-line="88">    <span class="k">def</span><span class="w"> </span><span class="nf">data_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="89">                 <span class="n">case</span><span class="p">:</span> <span class="n">FoamCase</span><span class="p">,</span>
-</span><span data-line="90">                 <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="91">                 <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="92"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="93"><span class="sd">        Registers field data from a specific OpenFOAM case for plotting.</span>
-</span><span data-line="94">
-</span><span data-line="95"><span class="sd">        Parameters</span>
-</span><span data-line="96"><span class="sd">        ----------</span>
-</span><span data-line="97"><span class="sd">        case : FoamCase</span>
-</span><span data-line="98"><span class="sd">            The OpenFOAM case object containing the data.</span>
-</span><span data-line="99"><span class="sd">        field_name : str</span>
-</span><span data-line="100"><span class="sd">            The name of the field variable to extract (e.g., &#39;U&#39;, &#39;p&#39;).</span>
-</span><span data-line="101"><span class="sd">        label : str</span>
-</span><span data-line="102"><span class="sd">            The legend label to assign to this dataset in the plot.</span>
-</span><span data-line="103"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="104">        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span></div>
+</span><span data-line="61"><span class="sd">        Returns</span>
+</span><span data-line="62"><span class="sd">        -------</span>
+</span><span data-line="63"><span class="sd">        dict : [str, str]</span>
+</span><span data-line="64"><span class="sd">            The dictionary with labels.</span>
+</span><span data-line="65">
+</span><span data-line="66"><span class="sd">        Raises</span>
+</span><span data-line="67"><span class="sd">        ------</span>
+</span><span data-line="68"><span class="sd">        FileNotFoundError</span>
+</span><span data-line="69"><span class="sd">            If `label_path` does not match a preset and the provided path does not exist.</span>
+</span><span data-line="70"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="71">
+</span><span data-line="72">        <span class="c1"># Set style</span>
+</span><span data-line="73">        <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="n">style</span><span class="p">)</span>
+</span><span data-line="74">
+</span><span data-line="75">        <span class="c1"># Check if input matches any preset labels</span>
+</span><span data-line="76">        <span class="n">labels</span> <span class="o">=</span> <span class="n">Labels</span><span class="p">()</span>
+</span><span data-line="77">        <span class="k">match</span> <span class="n">label_path</span><span class="p">:</span>
+</span><span data-line="78">            <span class="k">case</span> <span class="s1">&#39;velocity&#39;</span><span class="p">:</span>
+</span><span data-line="79">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">velocity</span>
+</span><span data-line="80">            <span class="k">case</span> <span class="s1">&#39;k&#39;</span><span class="p">:</span>
+</span><span data-line="81">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">k</span>
+</span><span data-line="82">            <span class="k">case</span> <span class="s1">&#39;nut&#39;</span><span class="p">:</span>
+</span><span data-line="83">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">nut</span>
+</span><span data-line="84">            <span class="k">case</span> <span class="s1">&#39;epsilon&#39;</span><span class="p">:</span>
+</span><span data-line="85">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">epsilon</span>
+</span><span data-line="86">            <span class="k">case</span> <span class="s1">&#39;omega&#39;</span><span class="p">:</span>
+</span><span data-line="87">                <span class="k">return</span> <span class="n">labels</span><span class="o">.</span><span class="n">omega</span>
+</span><span data-line="88">            <span class="k">case</span><span class="w"> </span><span class="k">_</span><span class="p">:</span>
+</span><span data-line="89">                <span class="k">pass</span>
+</span><span data-line="90">
+</span><span data-line="91">        <span class="c1"># Otherwise load labels from file</span>
+</span><span data-line="92">        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">label_path</span><span class="p">)</span>
+</span><span data-line="93">        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span data-line="94">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Config file not found at path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="95">
+</span><span data-line="96">        <span class="k">with</span> <span class="n">path</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="97">            <span class="n">config</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</span><span data-line="98">
+</span><span data-line="99">        <span class="c1"># Return dict with labels</span>
+</span><span data-line="100">        <span class="k">return</span> <span class="n">config</span>
+</span><span data-line="101">
+<div class="viewcode-block" id="FoamPlot.field_add">
+<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.field_add">[docs]</a>
+</span><span data-line="102">    <span class="k">def</span><span class="w"> </span><span class="nf">field_add</span><span class="p">(</span>
+</span><span data-line="103">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="104">        <span class="n">case</span><span class="p">:</span> <span class="n">FoamCase</span><span class="p">,</span>
+</span><span data-line="105">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="106">        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="107">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="108">
+</span><span data-line="109"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="110"><span class="sd">        Registers field data from a specific OpenFOAM case for plotting.</span>
+</span><span data-line="111">
+</span><span data-line="112"><span class="sd">        Parameters</span>
+</span><span data-line="113"><span class="sd">        ----------</span>
+</span><span data-line="114"><span class="sd">        case : FoamCase</span>
+</span><span data-line="115"><span class="sd">            The OpenFOAM case object containing the data.</span>
+</span><span data-line="116"><span class="sd">        field_name : str</span>
+</span><span data-line="117"><span class="sd">            The name of the field variable to extract (e.g., &#39;U&#39;, &#39;p&#39;).</span>
+</span><span data-line="118"><span class="sd">        label : str</span>
+</span><span data-line="119"><span class="sd">            The legend label to assign to this dataset in the plot.</span>
+</span><span data-line="120"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="121">
+</span><span data-line="122">        <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span></div>
 
-</span><span data-line="105">
-<div class="viewcode-block" id="FoamPlot.data_delete">
-<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.data_delete">[docs]</a>
-</span><span data-line="106">    <span class="k">def</span><span class="w"> </span><span class="nf">data_delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="107">                    <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="108"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="109"><span class="sd">        Removes a specific dataset from the plotting queue.</span>
-</span><span data-line="110">
-</span><span data-line="111"><span class="sd">        Parameters</span>
-</span><span data-line="112"><span class="sd">        ----------</span>
-</span><span data-line="113"><span class="sd">        label : str</span>
-</span><span data-line="114"><span class="sd">            The label of the dataset to remove.</span>
-</span><span data-line="115"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="116">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="117">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
-</span><span data-line="118">        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-</span><span data-line="119">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Plot data with label &quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot; not found.&#39;</span><span class="p">)</span></div>
+</span><span data-line="123">
+<div class="viewcode-block" id="FoamPlot.field_delete">
+<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.field_delete">[docs]</a>
+</span><span data-line="124">    <span class="k">def</span><span class="w"> </span><span class="nf">field_delete</span><span class="p">(</span>
+</span><span data-line="125">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="126">        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="127">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="128">
+</span><span data-line="129"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="130"><span class="sd">        Removes specific field data from the plotting queue.</span>
+</span><span data-line="131">
+</span><span data-line="132"><span class="sd">        Parameters</span>
+</span><span data-line="133"><span class="sd">        ----------</span>
+</span><span data-line="134"><span class="sd">        label : str</span>
+</span><span data-line="135"><span class="sd">            The label of the dataset to remove.</span>
+</span><span data-line="136"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="137">
+</span><span data-line="138">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="139">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="p">[</span><span class="n">label</span><span class="p">]</span>
+</span><span data-line="140">        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+</span><span data-line="141">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Plot data with label &quot;</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot; not found.&#39;</span><span class="p">)</span></div>
 
-</span><span data-line="120">
+</span><span data-line="142">
+<div class="viewcode-block" id="FoamPlot.interpolation_add">
+<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.interpolation_add">[docs]</a>
+</span><span data-line="143">    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation_add</span><span class="p">(</span>
+</span><span data-line="144">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="145">        <span class="n">case</span><span class="p">:</span> <span class="n">FoamCase</span><span class="p">,</span>
+</span><span data-line="146">        <span class="n">lower_corner</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span>
+</span><span data-line="147">        <span class="n">upper_corner</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+</span><span data-line="148">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="149">
+</span><span data-line="150"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="151"><span class="sd">        Placeholder</span>
+</span><span data-line="152"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="153">
+</span><span data-line="154">        <span class="n">int_data</span> <span class="o">=</span> <span class="n">case</span><span class="o">.</span><span class="n">get_interpolation</span><span class="p">()</span>
+</span><span data-line="155">
+</span><span data-line="156">        <span class="k">if</span> <span class="ow">not</span> <span class="n">int_data</span><span class="p">:</span>
+</span><span data-line="157">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No interpolation data is loaded in case &quot;</span><span class="si">{</span><span class="n">case</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+</span><span data-line="158">            <span class="k">return</span>
+</span><span data-line="159">
+</span><span data-line="160">        <span class="n">scoped_data</span> <span class="o">=</span> <span class="n">int_data</span><span class="o">.</span><span class="n">scope_data</span><span class="p">(</span><span class="n">lower_corner</span><span class="p">,</span> <span class="n">upper_corner</span><span class="p">)</span>
+</span><span data-line="161">
+</span><span data-line="162">        <span class="k">if</span> <span class="n">scoped_data</span><span class="o">.</span><span class="n">is_empty</span><span class="p">():</span>
+</span><span data-line="163">            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;No points found in the &#39;</span> <span class="o">+</span>
+</span><span data-line="164">                  <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">lower_corner</span><span class="si">}</span><span class="s1"> - </span><span class="si">{</span><span class="n">upper_corner</span><span class="si">}</span><span class="s1">&quot; domain.&#39;</span><span class="p">)</span>
+</span><span data-line="165">            <span class="k">return</span>
+</span><span data-line="166">
+</span><span data-line="167">        <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation_data</span><span class="p">[</span><span class="n">case</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">scoped_data</span></div>
+
+</span><span data-line="168">
+<div class="viewcode-block" id="FoamPlot.interpolation_delete">
+<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.interpolation_delete">[docs]</a>
+</span><span data-line="169">    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation_delete</span><span class="p">(</span>
+</span><span data-line="170">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="171">        <span class="n">case</span><span class="p">:</span> <span class="n">FoamCase</span>
+</span><span data-line="172">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="173">
+</span><span data-line="174"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="175"><span class="sd">        Placeholder</span>
+</span><span data-line="176"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="177">
+</span><span data-line="178">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="179">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation_data</span><span class="p">[</span><span class="n">case</span><span class="o">.</span><span class="n">label</span><span class="p">]</span>
+</span><span data-line="180">        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+</span><span data-line="181">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Interpolation data for case &quot;</span><span class="si">{</span><span class="n">case</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot; is not loaded.&#39;</span><span class="p">)</span></div>
+
+</span><span data-line="182">
+<div class="viewcode-block" id="FoamPlot.plot_interpolation">
+<a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.plot_interpolation">[docs]</a>
+</span><span data-line="183">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_interpolation</span><span class="p">(</span>
+</span><span data-line="184">        <span class="bp">self</span>
+</span><span data-line="185">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="186">
+</span><span data-line="187"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="188"><span class="sd">        Placeholder</span>
+</span><span data-line="189"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="190">
+</span><span data-line="191">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="192">            <span class="n">output_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;interpolation_</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s1">.png&#39;</span>
+</span><span data-line="193">            <span class="bp">self</span><span class="o">.</span><span class="n">_plot_2D_interpolation</span><span class="p">(</span><span class="n">output_file</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+</span><span data-line="194">
+</span><span data-line="195">    <span class="k">def</span><span class="w"> </span><span class="nf">_plot_2D_interpolation</span><span class="p">(</span>
+</span><span data-line="196">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="197">        <span class="n">output_file</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span>
+</span><span data-line="198">        <span class="n">int_data</span><span class="p">:</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span data-line="199">        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="200">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="201">
+</span><span data-line="202"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="203"><span class="sd">        Placeholder</span>
+</span><span data-line="204"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="205">
+</span><span data-line="206">        <span class="c1"># Un-normalize the surface normals get a clean look</span>
+</span><span data-line="207">        <span class="n">magnitude_x</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span>
+</span><span data-line="208">            <span class="nb">max</span><span class="p">(</span>
+</span><span data-line="209">                <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">]</span>
+</span><span data-line="210">                <span class="o">-</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_x&#39;</span><span class="p">]</span>
+</span><span data-line="211">            <span class="p">)</span>
+</span><span data-line="212">        <span class="p">)</span>
+</span><span data-line="213">        <span class="n">magnitude_y</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span>
+</span><span data-line="214">            <span class="nb">max</span><span class="p">(</span>
+</span><span data-line="215">                <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">]</span>
+</span><span data-line="216">                <span class="o">-</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_y&#39;</span><span class="p">]</span>
+</span><span data-line="217">            <span class="p">)</span>
+</span><span data-line="218">        <span class="p">)</span>
+</span><span data-line="219">
+</span><span data-line="220">        <span class="c1"># Times 1.1 so points don&#39;t overlap</span>
+</span><span data-line="221">        <span class="n">surfNorm_x</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="222">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">]</span>
+</span><span data-line="223">            <span class="o">+</span> <span class="n">magnitude_x</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_x&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1.1</span>
+</span><span data-line="224">        <span class="p">)</span>
+</span><span data-line="225">        <span class="n">surfNorm_y</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="226">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">]</span>
+</span><span data-line="227">            <span class="o">+</span> <span class="n">magnitude_y</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_y&#39;</span><span class="p">]</span><span class="o">*</span><span class="mf">1.1</span>
+</span><span data-line="228">        <span class="p">)</span>
+</span><span data-line="229">
+</span><span data-line="230">        <span class="c1"># Reshape to fit LineCollection structure</span>
+</span><span data-line="231">        <span class="n">segments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span>
+</span><span data-line="232">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">],</span>
+</span><span data-line="233">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">],</span>
+</span><span data-line="234">            <span class="n">surfNorm_x</span><span class="p">,</span>
+</span><span data-line="235">            <span class="n">surfNorm_y</span>
+</span><span data-line="236">        <span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span data-line="237">
+</span><span data-line="238">        <span class="n">lines</span> <span class="o">=</span> <span class="n">LineCollection</span><span class="p">(</span>
+</span><span data-line="239">            <span class="n">segments</span><span class="p">,</span>
+</span><span data-line="240">            <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+</span><span data-line="241">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;surfNorm&#39;</span>
+</span><span data-line="242">        <span class="p">)</span>
+</span><span data-line="243">
+</span><span data-line="244">        <span class="c1"># Declare ax nad fig, because hinting for mpl is sus</span>
+</span><span data-line="245">        <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span>
+</span><span data-line="246">        <span class="n">fig</span><span class="p">:</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span>
+</span><span data-line="247">
+</span><span data-line="248">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+</span><span data-line="249">
+</span><span data-line="250">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;IBM interpolation - </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="251">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</span><span data-line="252">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+</span><span data-line="253">
+</span><span data-line="254">        <span class="c1"># Scaled surface normals</span>
+</span><span data-line="255">        <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</span><span data-line="256">        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">()</span>
+</span><span data-line="257">
+</span><span data-line="258">        <span class="c1"># First interpolation points - wall</span>
+</span><span data-line="259">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="260">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">],</span>
+</span><span data-line="261">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">],</span>
+</span><span data-line="262">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+</span><span data-line="263">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span>
+</span><span data-line="264">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint0&#39;</span>
+</span><span data-line="265">        <span class="p">)</span>
+</span><span data-line="266">
+</span><span data-line="267">        <span class="c1"># Second interpolation points - first in-stream</span>
+</span><span data-line="268">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="269">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint1_x&#39;</span><span class="p">],</span>
+</span><span data-line="270">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint1_y&#39;</span><span class="p">],</span>
+</span><span data-line="271">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+</span><span data-line="272">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+</span><span data-line="273">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint1&#39;</span>
+</span><span data-line="274">        <span class="p">)</span>
+</span><span data-line="275">
+</span><span data-line="276">        <span class="c1"># Third interpolation points - second in-stream</span>
+</span><span data-line="277">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="278">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_x&#39;</span><span class="p">],</span>
+</span><span data-line="279">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_y&#39;</span><span class="p">],</span>
+</span><span data-line="280">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+</span><span data-line="281">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
+</span><span data-line="282">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint2&#39;</span>
+</span><span data-line="283">        <span class="p">)</span>
+</span><span data-line="284">
+</span><span data-line="285">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span><span data-line="286">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+</span><span data-line="287">        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span><span data-line="288">
 <div class="viewcode-block" id="FoamPlot.plot_profile">
 <a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.plot_profile">[docs]</a>
-</span><span data-line="121">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="122">                     <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="123">                     <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="124">                     <span class="n">data_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="125">                     <span class="n">position_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="126">                     <span class="n">position_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-</span><span data-line="127">                     <span class="n">position_tol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-</span><span data-line="128">                     <span class="n">labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
-</span><span data-line="129">                     <span class="c1">#style: str = &#39;lutils.plt_cfg.lutils&#39;,</span>
-</span><span data-line="130">                     <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="131">                     <span class="n">out_csv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="132"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="133"><span class="sd">        Generates a profile plot by extracting data along a geometric slice.</span>
-</span><span data-line="134">
-</span><span data-line="135"><span class="sd">        This method filters 3D field data to find cells close to a specific</span>
-</span><span data-line="136"><span class="sd">        coordinate (&#39;position_value&#39;) along a &#39;position_axis&#39;, effectively</span>
-</span><span data-line="137"><span class="sd">        creating a line plot through the domain.</span>
-</span><span data-line="138">
-</span><span data-line="139"><span class="sd">        Parameters</span>
-</span><span data-line="140"><span class="sd">        ----------</span>
-</span><span data-line="141"><span class="sd">        output_file : str</span>
-</span><span data-line="142"><span class="sd">            The filename for the saved plot (e.g., &#39;profile.png&#39;).</span>
-</span><span data-line="143"><span class="sd">        field : str</span>
-</span><span data-line="144"><span class="sd">            The specific scalar component of the field to plot.</span>
-</span><span data-line="145"><span class="sd">        data_axis : str</span>
-</span><span data-line="146"><span class="sd">            The axis to plot against (usually the independent variable axis).</span>
-</span><span data-line="147"><span class="sd">        position_axis : str</span>
-</span><span data-line="148"><span class="sd">            The axis used to slice the domain (the fixed coordinate axis).</span>
-</span><span data-line="149"><span class="sd">        position_value : float</span>
-</span><span data-line="150"><span class="sd">            The coordinate value along `position_axis` where the slice is taken.</span>
-</span><span data-line="151"><span class="sd">        position_tol : float</span>
-</span><span data-line="152"><span class="sd">            The tolerance width around `position_value` to include cells.</span>
-</span><span data-line="153"><span class="sd">        labels : str, optional</span>
-</span><span data-line="154"><span class="sd">            The label configuration preset or path. Default is &#39;velocity&#39;.</span>
-</span><span data-line="155"><span class="sd">        style : str, optional</span>
-</span><span data-line="156"><span class="sd">            The matplotlib style sheet to use. Default is &#39;lutils.plt_cfg.lutils&#39;.</span>
-</span><span data-line="157"><span class="sd">        figure_id : str or int or None, optional</span>
-</span><span data-line="158"><span class="sd">            The unique identifier for the figure. If None, a new figure is created.</span>
-</span><span data-line="159"><span class="sd">        out_csv : bool, optional</span>
-</span><span data-line="160"><span class="sd">            If True, exports the sliced data to CSV files in the plot directory.</span>
-</span><span data-line="161"><span class="sd">            Default is True.</span>
-</span><span data-line="162"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="163">
-</span><span data-line="164">        <span class="c1"># Get label and style</span>
-</span><span data-line="165">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_config</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-</span><span data-line="166">
-</span><span data-line="167">        <span class="c1"># Retrieve figure</span>
-</span><span data-line="168">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figure_ax</span><span class="p">(</span><span class="n">figure_id</span><span class="p">)</span>
-</span><span data-line="169">
-</span><span data-line="170">        <span class="c1"># Set labels</span>
-</span><span data-line="171">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span>
-</span><span data-line="172">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">])</span>
-</span><span data-line="173">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">])</span>
-</span><span data-line="174">
-</span><span data-line="175">        <span class="c1"># Plot all plot data entries</span>
-</span><span data-line="176">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span data-line="177">            <span class="n">trimmed</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_cells</span><span class="p">(</span>
-</span><span data-line="178">                <span class="n">position_axis</span><span class="p">,</span> <span class="n">position_value</span><span class="p">,</span> <span class="n">data_axis</span><span class="p">,</span> <span class="n">position_tol</span><span class="p">)</span>
-</span><span data-line="179">            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">trimmed</span><span class="p">[</span><span class="n">data_axis</span><span class="p">],</span>
-</span><span data-line="180">                       <span class="n">trimmed</span><span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="181">            <span class="k">if</span> <span class="n">out_csv</span><span class="p">:</span>
-</span><span data-line="182">                <span class="n">trimmed</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">))</span>
-</span><span data-line="183">
-</span><span data-line="184">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-</span><span data-line="185">
-</span><span data-line="186">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="n">output_file</span><span class="p">)</span></div>
+</span><span data-line="289">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_profile</span><span class="p">(</span>
+</span><span data-line="290">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="291">        <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="292">        <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="293">        <span class="n">data_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="294">        <span class="n">position_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="295">        <span class="n">position_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="296">        <span class="n">position_tol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="297">        <span class="n">labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
+</span><span data-line="298">        <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lutils.profile&#39;</span><span class="p">,</span>
+</span><span data-line="299">        <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="300">        <span class="n">out_csv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="301">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="302">
+</span><span data-line="303"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="304"><span class="sd">        Generates a profile plot by extracting data along a geometric slice.</span>
+</span><span data-line="305">
+</span><span data-line="306"><span class="sd">        This method filters 3D field data to find cells close to a specific</span>
+</span><span data-line="307"><span class="sd">        coordinate (&#39;position_value&#39;) along a &#39;position_axis&#39;, effectively</span>
+</span><span data-line="308"><span class="sd">        creating a line plot through the domain.</span>
+</span><span data-line="309">
+</span><span data-line="310"><span class="sd">        Parameters</span>
+</span><span data-line="311"><span class="sd">        ----------</span>
+</span><span data-line="312"><span class="sd">        output_file : str</span>
+</span><span data-line="313"><span class="sd">            The filename for the saved plot (e.g., &#39;profile.png&#39;).</span>
+</span><span data-line="314"><span class="sd">        field : str</span>
+</span><span data-line="315"><span class="sd">            The specific scalar component of the field to plot.</span>
+</span><span data-line="316"><span class="sd">        data_axis : str</span>
+</span><span data-line="317"><span class="sd">            The axis to plot against (usually the independent variable axis).</span>
+</span><span data-line="318"><span class="sd">        position_axis : str</span>
+</span><span data-line="319"><span class="sd">            The axis used to slice the domain (the fixed coordinate axis).</span>
+</span><span data-line="320"><span class="sd">        position_value : float</span>
+</span><span data-line="321"><span class="sd">            The coordinate value along `position_axis` where the slice is taken.</span>
+</span><span data-line="322"><span class="sd">        position_tol : float</span>
+</span><span data-line="323"><span class="sd">            The tolerance width around `position_value` to include cells.</span>
+</span><span data-line="324"><span class="sd">        labels : str, optional</span>
+</span><span data-line="325"><span class="sd">            The label configuration preset or path. Default is &#39;velocity&#39;.</span>
+</span><span data-line="326"><span class="sd">        style : str, optional</span>
+</span><span data-line="327"><span class="sd">            The matplotlib style sheet to use. Default is &#39;lutils.plt_cfg.lutils&#39;.</span>
+</span><span data-line="328"><span class="sd">        figure_id : str or int or None, optional</span>
+</span><span data-line="329"><span class="sd">            The unique identifier for the figure. If None, a new figure is created.</span>
+</span><span data-line="330"><span class="sd">        out_csv : bool, optional</span>
+</span><span data-line="331"><span class="sd">            If True, exports the sliced data to CSV files in the plot directory.</span>
+</span><span data-line="332"><span class="sd">            Default is True.</span>
+</span><span data-line="333"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="334">
+</span><span data-line="335">        <span class="c1"># Get label and style</span>
+</span><span data-line="336">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_config</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
+</span><span data-line="337">
+</span><span data-line="338">        <span class="c1"># Retrieve figure</span>
+</span><span data-line="339">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figure_ax</span><span class="p">(</span><span class="n">figure_id</span><span class="p">)</span>
+</span><span data-line="340">
+</span><span data-line="341">        <span class="c1"># Set labels</span>
+</span><span data-line="342">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span>
+</span><span data-line="343">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">])</span>
+</span><span data-line="344">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">])</span>
+</span><span data-line="345">
+</span><span data-line="346">        <span class="c1"># Plot all plot data entries</span>
+</span><span data-line="347">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="348">            <span class="n">trimmed</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_cells</span><span class="p">(</span>
+</span><span data-line="349">                <span class="n">position_axis</span><span class="p">,</span>
+</span><span data-line="350">                <span class="n">position_value</span><span class="p">,</span>
+</span><span data-line="351">                <span class="n">data_axis</span><span class="p">,</span>
+</span><span data-line="352">                <span class="n">position_tol</span>
+</span><span data-line="353">            <span class="p">)</span>
+</span><span data-line="354">            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="355">                <span class="n">trimmed</span><span class="p">[</span><span class="n">data_axis</span><span class="p">],</span>
+</span><span data-line="356">                <span class="n">trimmed</span><span class="p">[</span><span class="n">field</span><span class="p">],</span>
+</span><span data-line="357">                <span class="n">label</span><span class="o">=</span><span class="n">key</span>
+</span><span data-line="358">            <span class="p">)</span>
+</span><span data-line="359">            <span class="k">if</span> <span class="n">out_csv</span><span class="p">:</span>
+</span><span data-line="360">                <span class="n">trimmed</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">))</span>
+</span><span data-line="361">
+</span><span data-line="362">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span><span data-line="363">
+</span><span data-line="364">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="n">output_file</span><span class="p">)</span></div>
 
-</span><span data-line="187">
-</span><span data-line="188">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_figure_ax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="189">                       <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
-</span><span data-line="190"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="191"><span class="sd">        Retrieves an existing figure or creates a new one.</span>
-</span><span data-line="192">
-</span><span data-line="193"><span class="sd">        Parameters</span>
-</span><span data-line="194"><span class="sd">        ----------</span>
-</span><span data-line="195"><span class="sd">        figure_id : str or int or None</span>
-</span><span data-line="196"><span class="sd">            The unique identifier for the figure.</span>
-</span><span data-line="197">
-</span><span data-line="198"><span class="sd">        Returns</span>
-</span><span data-line="199"><span class="sd">        -------</span>
-</span><span data-line="200"><span class="sd">        matplotlib.figure.Figure</span>
-</span><span data-line="201"><span class="sd">            The active matplotlib figure object.</span>
-</span><span data-line="202"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="203">        <span class="k">if</span> <span class="n">figure_id</span><span class="p">:</span>
-</span><span data-line="204">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figure_id</span><span class="p">))</span>
-</span><span data-line="205">            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-</span><span data-line="206">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="207">            <span class="n">raw_fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-</span><span data-line="208">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">raw_fig</span><span class="p">)</span>
-</span><span data-line="209">
-</span><span data-line="210">        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+</span><span data-line="365">
+</span><span data-line="366">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_figure_ax</span><span class="p">(</span>
+</span><span data-line="367">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="368">        <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+</span><span data-line="369">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
+</span><span data-line="370">
+</span><span data-line="371"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="372"><span class="sd">        Retrieves an existing figure or creates a new one.</span>
+</span><span data-line="373">
+</span><span data-line="374"><span class="sd">        Parameters</span>
+</span><span data-line="375"><span class="sd">        ----------</span>
+</span><span data-line="376"><span class="sd">        figure_id : str or int or None</span>
+</span><span data-line="377"><span class="sd">            A unique identifier for the figure.</span>
+</span><span data-line="378">
+</span><span data-line="379"><span class="sd">        Returns</span>
+</span><span data-line="380"><span class="sd">        -------</span>
+</span><span data-line="381"><span class="sd">        matplotlib.figure.Figure</span>
+</span><span data-line="382"><span class="sd">            An active matplotlib figure object.</span>
+</span><span data-line="383"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="384">
+</span><span data-line="385">        <span class="k">if</span> <span class="n">figure_id</span><span class="p">:</span>
+</span><span data-line="386">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="387">                <span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span>
+</span><span data-line="388">                <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figure_id</span><span class="p">)</span>
+</span><span data-line="389">            <span class="p">)</span>
+</span><span data-line="390">            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+</span><span data-line="391">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="392">            <span class="n">raw_fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+</span><span data-line="393">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">raw_fig</span><span class="p">)</span>
+</span><span data-line="394">
+</span><span data-line="395">        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">

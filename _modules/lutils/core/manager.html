@@ -112,110 +112,128 @@ data-aria-dark="Switch to auto color mode">
 <div class="viewcode-block" id="CaseManager">
 <a class="viewcode-back" href="../../../core.html#lutils.core.CaseManager">[docs]</a>
 </span><span data-line="4"><span class="k">class</span><span class="w"> </span><span class="nc">CaseManager</span><span class="p">:</span>
-</span><span data-line="5"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="6"><span class="sd">    A manager class for controlling multiple OpenFOAM cases.</span>
-</span><span data-line="7">
-</span><span data-line="8"><span class="sd">    This class acts as a registry for FoamCase objects, allowing for batch</span>
-</span><span data-line="9"><span class="sd">    execution of scripts and management of case instances via unique labels.</span>
-</span><span data-line="10">
-</span><span data-line="11"><span class="sd">    Parameters</span>
-</span><span data-line="12"><span class="sd">    ----------</span>
-</span><span data-line="13"><span class="sd">    case_paths : list[str]</span>
-</span><span data-line="14"><span class="sd">        A list of file paths to the OpenFOAM case directories.</span>
-</span><span data-line="15"><span class="sd">    case_labels : list[str]</span>
-</span><span data-line="16"><span class="sd">        A list of unique labels corresponding to each case path.</span>
-</span><span data-line="17">
-</span><span data-line="18"><span class="sd">    Attributes</span>
-</span><span data-line="19"><span class="sd">    ----------</span>
-</span><span data-line="20"><span class="sd">    cases : dict[str, FoamCase]</span>
-</span><span data-line="21"><span class="sd">        A dictionary mapping unique case labels to their corresponding</span>
-</span><span data-line="22"><span class="sd">        FoamCase objects.</span>
-</span><span data-line="23"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="24">
-</span><span data-line="25">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="26">                 <span class="n">case_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
-</span><span data-line="27">                 <span class="n">case_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="28">        <span class="bp">self</span><span class="o">.</span><span class="n">cases</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span data-line="29">        <span class="c1"># Load each case into dict</span>
-</span><span data-line="30">        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">case_paths</span><span class="p">,</span> <span class="n">case_labels</span><span class="p">):</span>
-</span><span data-line="31">            <span class="bp">self</span><span class="o">.</span><span class="n">add_case_by_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
-</span><span data-line="32">
+</span><span data-line="5">
+</span><span data-line="6"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="7"><span class="sd">    A manager class for controlling multiple OpenFOAM cases.</span>
+</span><span data-line="8">
+</span><span data-line="9"><span class="sd">    This class acts as a registry for FoamCase objects, allowing for batch</span>
+</span><span data-line="10"><span class="sd">    execution of scripts and management of case instances via unique labels.</span>
+</span><span data-line="11">
+</span><span data-line="12"><span class="sd">    Parameters</span>
+</span><span data-line="13"><span class="sd">    ----------</span>
+</span><span data-line="14"><span class="sd">    case_paths : list[str]</span>
+</span><span data-line="15"><span class="sd">        A list of file paths to the OpenFOAM case directories.</span>
+</span><span data-line="16"><span class="sd">    case_labels : list[str]</span>
+</span><span data-line="17"><span class="sd">        A list of unique labels corresponding to each case path.</span>
+</span><span data-line="18">
+</span><span data-line="19"><span class="sd">    Attributes</span>
+</span><span data-line="20"><span class="sd">    ----------</span>
+</span><span data-line="21"><span class="sd">    cases : dict[str, FoamCase]</span>
+</span><span data-line="22"><span class="sd">        A dictionary mapping unique case labels to their corresponding</span>
+</span><span data-line="23"><span class="sd">        FoamCase objects.</span>
+</span><span data-line="24"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="25">
+</span><span data-line="26">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="27">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="28">        <span class="n">case_paths</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+</span><span data-line="29">        <span class="n">case_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+</span><span data-line="30">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="31">
+</span><span data-line="32">        <span class="bp">self</span><span class="o">.</span><span class="n">cases</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="33">        <span class="c1"># Load each case into dict</span>
+</span><span data-line="34">        <span class="k">for</span> <span class="n">path</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">case_paths</span><span class="p">,</span> <span class="n">case_labels</span><span class="p">):</span>
+</span><span data-line="35">            <span class="bp">self</span><span class="o">.</span><span class="n">add_case_by_path</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span>
+</span><span data-line="36">
 <div class="viewcode-block" id="CaseManager.run_script">
 <a class="viewcode-back" href="../../../core.html#lutils.core.CaseManager.run_script">[docs]</a>
-</span><span data-line="33">    <span class="k">def</span><span class="w"> </span><span class="nf">run_script</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="34">                   <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="35">                   <span class="n">case_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="36"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="37"><span class="sd">        Executes an arbitrary script across selected OpenFOAM cases.</span>
-</span><span data-line="38">
-</span><span data-line="39"><span class="sd">        Parameters</span>
-</span><span data-line="40"><span class="sd">        ----------</span>
-</span><span data-line="41"><span class="sd">        file_name : str</span>
-</span><span data-line="42"><span class="sd">            The name or path of the script to execute. Relative paths are</span>
-</span><span data-line="43"><span class="sd">            assumed to be relative to the specific case directory.</span>
-</span><span data-line="44"><span class="sd">        case_labels : list[str], optional</span>
-</span><span data-line="45"><span class="sd">            A list of specific case labels to run the script on. If None,</span>
-</span><span data-line="46"><span class="sd">            the script is executed on all managed cases. Default is None.</span>
-</span><span data-line="47">
-</span><span data-line="48"><span class="sd">        Raises</span>
-</span><span data-line="49"><span class="sd">        ------</span>
-</span><span data-line="50"><span class="sd">        KeyError</span>
-</span><span data-line="51"><span class="sd">            If a label provided in `case_labels` does not exist in the manager.</span>
-</span><span data-line="52"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="53">        <span class="c1"># Select cases based on input</span>
-</span><span data-line="54">        <span class="k">if</span> <span class="ow">not</span> <span class="n">case_labels</span><span class="p">:</span>
-</span><span data-line="55">            <span class="n">cases</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
-</span><span data-line="56">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="57">            <span class="n">cases</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">case_labels</span><span class="p">]</span>
-</span><span data-line="58">        <span class="c1"># Run script inside case directories</span>
-</span><span data-line="59">        <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">:</span>
-</span><span data-line="60">            <span class="k">case</span><span class="o">.</span><span class="n">run_script</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span></div>
+</span><span data-line="37">    <span class="k">def</span><span class="w"> </span><span class="nf">run_script</span><span class="p">(</span>
+</span><span data-line="38">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="39">        <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="40">        <span class="n">case_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="41">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="42">
+</span><span data-line="43"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="44"><span class="sd">        Executes an arbitrary script across selected OpenFOAM cases.</span>
+</span><span data-line="45">
+</span><span data-line="46"><span class="sd">        Parameters</span>
+</span><span data-line="47"><span class="sd">        ----------</span>
+</span><span data-line="48"><span class="sd">        file_name : str</span>
+</span><span data-line="49"><span class="sd">            The name or path of the script to execute. Relative paths are</span>
+</span><span data-line="50"><span class="sd">            assumed to be relative to the specific case directory.</span>
+</span><span data-line="51"><span class="sd">        case_labels : list[str], optional</span>
+</span><span data-line="52"><span class="sd">            A list of specific case labels to run the script on. If None,</span>
+</span><span data-line="53"><span class="sd">            the script is executed on all managed cases. Default is None.</span>
+</span><span data-line="54">
+</span><span data-line="55"><span class="sd">        Raises</span>
+</span><span data-line="56"><span class="sd">        ------</span>
+</span><span data-line="57"><span class="sd">        KeyError</span>
+</span><span data-line="58"><span class="sd">            If a label provided in `case_labels` does not exist in the manager.</span>
+</span><span data-line="59"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="60">
+</span><span data-line="61">        <span class="c1"># Select cases based on input</span>
+</span><span data-line="62">        <span class="k">if</span> <span class="ow">not</span> <span class="n">case_labels</span><span class="p">:</span>
+</span><span data-line="63">            <span class="n">cases</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+</span><span data-line="64">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="65">            <span class="n">cases</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">case_labels</span><span class="p">]</span>
+</span><span data-line="66">        <span class="c1"># Run script inside case directories</span>
+</span><span data-line="67">        <span class="k">for</span> <span class="n">case</span> <span class="ow">in</span> <span class="n">cases</span><span class="p">:</span>
+</span><span data-line="68">            <span class="k">case</span><span class="o">.</span><span class="n">run_script</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span></div>
 
-</span><span data-line="61">
+</span><span data-line="69">
 <div class="viewcode-block" id="CaseManager.add_case_by_path">
 <a class="viewcode-back" href="../../../core.html#lutils.core.CaseManager.add_case_by_path">[docs]</a>
-</span><span data-line="62">    <span class="k">def</span><span class="w"> </span><span class="nf">add_case_by_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="63">                         <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="64">                         <span class="n">case_label</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="65"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="66"><span class="sd">        Instantiates a FoamCase and registers it to the manager.</span>
-</span><span data-line="67">
-</span><span data-line="68"><span class="sd">        Parameters</span>
-</span><span data-line="69"><span class="sd">        ----------</span>
-</span><span data-line="70"><span class="sd">        path : str</span>
-</span><span data-line="71"><span class="sd">            The file path to the OpenFOAM case directory.</span>
-</span><span data-line="72"><span class="sd">        case_label : str</span>
-</span><span data-line="73"><span class="sd">            The unique identifier for this case.</span>
-</span><span data-line="74">
-</span><span data-line="75"><span class="sd">        Raises</span>
-</span><span data-line="76"><span class="sd">        ------</span>
-</span><span data-line="77"><span class="sd">        ValueError</span>
-</span><span data-line="78"><span class="sd">            If the case path is invalid, if FoamCase initialization fails,</span>
-</span><span data-line="79"><span class="sd">            or if the &#39;case_label&#39; already exists in the manager.</span>
-</span><span data-line="80"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="81">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="82">            <span class="n">case</span> <span class="o">=</span> <span class="n">FoamCase</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">case_label</span><span class="p">)</span>
-</span><span data-line="83">
-</span><span data-line="84">        <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span data-line="85">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span data-line="86">                <span class="sa">f</span><span class="s1">&#39;Error adding case to manager. Invalid path or internal FoamCase creation failed.&#39;</span>
-</span><span data-line="87">                <span class="sa">f</span><span class="s1">&#39;Check path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">.&#39;</span>
-</span><span data-line="88">            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
-</span><span data-line="89">
-</span><span data-line="90">        <span class="k">if</span> <span class="n">case_label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">:</span>
-</span><span data-line="91">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-</span><span data-line="92">                <span class="sa">f</span><span class="s1">&#39;Unique Label Error: A case with label &quot;</span><span class="si">{</span><span class="n">case_label</span><span class="si">}</span><span class="s1">&quot; already in the manager!&#39;</span><span class="p">)</span>
-</span><span data-line="93">
-</span><span data-line="94">        <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">[</span><span class="n">case</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">case</span></div>
-
+</span><span data-line="70">    <span class="k">def</span><span class="w"> </span><span class="nf">add_case_by_path</span><span class="p">(</span>
+</span><span data-line="71">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="72">        <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="73">        <span class="n">case_label</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="74">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="75">
+</span><span data-line="76"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="77"><span class="sd">        Instantiates a FoamCase and registers it to the manager.</span>
+</span><span data-line="78">
+</span><span data-line="79"><span class="sd">        Parameters</span>
+</span><span data-line="80"><span class="sd">        ----------</span>
+</span><span data-line="81"><span class="sd">        path : str</span>
+</span><span data-line="82"><span class="sd">            The file path to the OpenFOAM case directory.</span>
+</span><span data-line="83"><span class="sd">        case_label : str</span>
+</span><span data-line="84"><span class="sd">            The unique identifier for this case.</span>
+</span><span data-line="85">
+</span><span data-line="86"><span class="sd">        Raises</span>
+</span><span data-line="87"><span class="sd">        ------</span>
+</span><span data-line="88"><span class="sd">        ValueError</span>
+</span><span data-line="89"><span class="sd">            If the case path is invalid, if FoamCase initialization fails,</span>
+</span><span data-line="90"><span class="sd">            or if the &#39;case_label&#39; already exists in the manager.</span>
+</span><span data-line="91"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="92">
+</span><span data-line="93">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="94">            <span class="n">case</span> <span class="o">=</span> <span class="n">FoamCase</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">case_label</span><span class="p">)</span>
 </span><span data-line="95">
+</span><span data-line="96">        <span class="k">except</span> <span class="p">(</span><span class="ne">FileNotFoundError</span><span class="p">,</span> <span class="ne">OSError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="97">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="98">                <span class="s1">&#39;Error adding case to manager. Invalid path or internal &#39;</span> <span class="o">+</span>
+</span><span data-line="99">                <span class="s1">&#39;FoamCase creation failed.&#39;</span>
+</span><span data-line="100">                <span class="sa">f</span><span class="s1">&#39;Check path: </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1">.&#39;</span>
+</span><span data-line="101">            <span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+</span><span data-line="102">
+</span><span data-line="103">        <span class="k">if</span> <span class="n">case_label</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">:</span>
+</span><span data-line="104">            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+</span><span data-line="105">                <span class="sa">f</span><span class="s1">&#39;Unique Label Error: A case with label &quot;</span><span class="si">{</span><span class="n">case_label</span><span class="si">}</span><span class="s1">&quot; &#39;</span> <span class="o">+</span>
+</span><span data-line="106">                <span class="s1">&#39;already in the manager!&#39;</span><span class="p">)</span>
+</span><span data-line="107">
+</span><span data-line="108">        <span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="p">[</span><span class="n">case</span><span class="o">.</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="n">case</span></div>
+
+</span><span data-line="109">
 <div class="viewcode-block" id="CaseManager.get_cases">
 <a class="viewcode-back" href="../../../core.html#lutils.core.CaseManager.get_cases">[docs]</a>
-</span><span data-line="96">    <span class="k">def</span><span class="w"> </span><span class="nf">get_cases</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
-</span><span data-line="97"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="98"><span class="sd">        Placeholder description</span>
-</span><span data-line="99"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="100">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
+</span><span data-line="110">    <span class="k">def</span><span class="w"> </span><span class="nf">get_cases</span><span class="p">(</span>
+</span><span data-line="111">        <span class="bp">self</span>
+</span><span data-line="112">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">:</span>
+</span><span data-line="113">
+</span><span data-line="114"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="115"><span class="sd">        Placeholder description</span>
+</span><span data-line="116"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="117">
+</span><span data-line="118">        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cases</span><span class="o">.</span><span class="n">values</span><span class="p">())</span></div>
 </div>
 
 </span></pre></div>
