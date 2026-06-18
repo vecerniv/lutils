@@ -12,6 +12,8 @@ version = "1.1.0"
 description = "A Python library for managing and post-processing OpenFOAM cases."
 requires-python = ">=3.12,<3.13"
 readme = "README.md"
+license = "LGPL-3.0-or-later"
+keywords = ["OpenFOAM", "OpenHFDIB-RANS", "verification", "validation", "post-processing"]
 dependencies = [
     "numpy",
     "matplotlib",
@@ -20,7 +22,9 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/vecerniv/lutils"
+Repository = "https://github.com/vecerniv/lutils"
+Documentation = "https://vecerniv.github.io/lutils"
+Issues = "https://github.com/vecerniv/lutils/issues"
 
 [dependency-groups]
 dev = [
