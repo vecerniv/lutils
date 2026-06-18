@@ -294,40 +294,39 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="176">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 </span><span data-line="177">            <span class="n">trimmed</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_cells</span><span class="p">(</span>
 </span><span data-line="178">                <span class="n">position_axis</span><span class="p">,</span> <span class="n">position_value</span><span class="p">,</span> <span class="n">data_axis</span><span class="p">,</span> <span class="n">position_tol</span><span class="p">)</span>
-</span><span data-line="179">            <span class="nb">print</span><span class="p">(</span><span class="n">trimmed</span><span class="p">)</span>
-</span><span data-line="180">            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">trimmed</span><span class="p">[</span><span class="n">data_axis</span><span class="p">],</span>
-</span><span data-line="181">                       <span class="n">trimmed</span><span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
-</span><span data-line="182">            <span class="k">if</span> <span class="n">out_csv</span><span class="p">:</span>
-</span><span data-line="183">                <span class="n">trimmed</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">))</span>
-</span><span data-line="184">
-</span><span data-line="185">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-</span><span data-line="186">
-</span><span data-line="187">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="n">output_file</span><span class="p">)</span></div>
+</span><span data-line="179">            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">trimmed</span><span class="p">[</span><span class="n">data_axis</span><span class="p">],</span>
+</span><span data-line="180">                       <span class="n">trimmed</span><span class="p">[</span><span class="n">field</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
+</span><span data-line="181">            <span class="k">if</span> <span class="n">out_csv</span><span class="p">:</span>
+</span><span data-line="182">                <span class="n">trimmed</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">))</span>
+</span><span data-line="183">
+</span><span data-line="184">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span><span data-line="185">
+</span><span data-line="186">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="n">output_file</span><span class="p">)</span></div>
 
-</span><span data-line="188">
-</span><span data-line="189">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_figure_ax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
-</span><span data-line="190">                       <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
-</span><span data-line="191"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="192"><span class="sd">        Retrieves an existing figure or creates a new one.</span>
-</span><span data-line="193">
-</span><span data-line="194"><span class="sd">        Parameters</span>
-</span><span data-line="195"><span class="sd">        ----------</span>
-</span><span data-line="196"><span class="sd">        figure_id : str or int or None</span>
-</span><span data-line="197"><span class="sd">            The unique identifier for the figure.</span>
-</span><span data-line="198">
-</span><span data-line="199"><span class="sd">        Returns</span>
-</span><span data-line="200"><span class="sd">        -------</span>
-</span><span data-line="201"><span class="sd">        matplotlib.figure.Figure</span>
-</span><span data-line="202"><span class="sd">            The active matplotlib figure object.</span>
-</span><span data-line="203"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="204">        <span class="k">if</span> <span class="n">figure_id</span><span class="p">:</span>
-</span><span data-line="205">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figure_id</span><span class="p">))</span>
-</span><span data-line="206">            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-</span><span data-line="207">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="208">            <span class="n">raw_fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-</span><span data-line="209">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">raw_fig</span><span class="p">)</span>
-</span><span data-line="210">
-</span><span data-line="211">        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+</span><span data-line="187">
+</span><span data-line="188">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_figure_ax</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+</span><span data-line="189">                       <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
+</span><span data-line="190"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="191"><span class="sd">        Retrieves an existing figure or creates a new one.</span>
+</span><span data-line="192">
+</span><span data-line="193"><span class="sd">        Parameters</span>
+</span><span data-line="194"><span class="sd">        ----------</span>
+</span><span data-line="195"><span class="sd">        figure_id : str or int or None</span>
+</span><span data-line="196"><span class="sd">            The unique identifier for the figure.</span>
+</span><span data-line="197">
+</span><span data-line="198"><span class="sd">        Returns</span>
+</span><span data-line="199"><span class="sd">        -------</span>
+</span><span data-line="200"><span class="sd">        matplotlib.figure.Figure</span>
+</span><span data-line="201"><span class="sd">            The active matplotlib figure object.</span>
+</span><span data-line="202"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="203">        <span class="k">if</span> <span class="n">figure_id</span><span class="p">:</span>
+</span><span data-line="204">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figure_id</span><span class="p">))</span>
+</span><span data-line="205">            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+</span><span data-line="206">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="207">            <span class="n">raw_fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+</span><span data-line="208">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">raw_fig</span><span class="p">)</span>
+</span><span data-line="209">
+</span><span data-line="210">        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">
