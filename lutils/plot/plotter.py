@@ -188,6 +188,10 @@ class FoamPlot:
         Placeholder
         """
 
+        if not self._interpolation_data:
+            print('No interpolation data is loaded.')
+            return
+
         for key, value in self._interpolation_data.items():
             output_file = self._plot_dir / f'interpolation_{key}.png'
             self._plot_2D_interpolation(output_file, value, key)
@@ -203,28 +207,34 @@ class FoamPlot:
         Placeholder
         """
 
-        # Un-normalize the surface normals get a clean look
-        magnitude_x = abs(
-            max(
-                int_data['intPoint0_x']
-                - int_data['intPoint2_x']
-            )
-        )
-        magnitude_y = abs(
-            max(
-                int_data['intPoint0_y']
-                - int_data['intPoint2_y']
-            )
-        )
+        # Get the interpolation length
+        magnitude_x = int_data['intPoint0_x'] - int_data['intPoint2_x']
 
-        # Times 1.1 so points don't overlap
+        magnitude_y = int_data['intPoint0_y'] - int_data['intPoint2_y']
+
+        length_interpolation = np.sqrt(
+            magnitude_x**2
+            + magnitude_y**2
+        ).max()
+
+        # Get the surface normal length
+        length_surfNorm = np.sqrt(
+            int_data['surfNorm_x']**2
+            + int_data['surfNorm_y']**2
+        ).max()
+
+        # Calculate the scaling factor
+        t = length_interpolation / length_surfNorm
+
+        # Calculated the scaled surface normals
+        # x = Ax + t(Bx - Ax), y = Ay + t(By - Ay)
         surfNorm_x = (
             int_data['intPoint0_x']
-            + magnitude_x*int_data['surfNorm_x']*1.1
+            + t*int_data['surfNorm_x']
         )
         surfNorm_y = (
             int_data['intPoint0_y']
-            + magnitude_y*int_data['surfNorm_y']*1.1
+            + t*int_data['surfNorm_y']
         )
 
         # Reshape to fit LineCollection structure
@@ -241,7 +251,7 @@ class FoamPlot:
             label='surfNorm'
         )
 
-        # Declare ax nad fig, because hinting for mpl is sus
+        # Declare ax and fig, because hinting for mpl is sus
         ax: Axes
         fig: fgr.Figure
 
