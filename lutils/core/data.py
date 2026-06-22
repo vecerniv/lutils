@@ -95,7 +95,40 @@ class ResidualData:
                 f'File not found at "{file_path}".'
             )
 
-        self.data = pl.read_csv(source=file_path, has_header=True, skip_rows=1)
+        with file_path.open() as f:
+            f.readline()
+            line = f.readline()
+            col_names = line.strip('#').split()
+
+        data = pl.read_csv(
+            source=file_path,
+            skip_rows=3,
+            separator='\t',
+            new_columns=col_names
+        )
+
+        stripped_time = data.select(
+            pl.col('Time').str.strip_chars()
+        ).to_series(0).str.to_integer()
+
+        data = data.replace_column(0, stripped_time)
+
+        self.data = data
+
+    def get_columns(
+        self
+    ) -> list[pl.Series]:
+
+        """
+        Placeholder
+        """
+
+        out = []
+
+        for col in self.data:
+            out.append(col)
+
+        return out
 
 
 class InterpolationData:

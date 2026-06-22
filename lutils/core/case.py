@@ -51,7 +51,7 @@ class FoamCase:
         self.label = label
         self.of_distribution = of_distribution
         self.fields = {}
-        self.resiudals = None
+        self.residuals = None
         self.interpolation = None
 
     def run_script(
@@ -159,7 +159,7 @@ class FoamCase:
 
     def residuals_add(
         self,
-        file_path: Path
+        file_path: str
     ) -> None:
 
         """
@@ -178,6 +178,16 @@ class FoamCase:
 
         self.residuals = ResidualData(path)
 
+    def get_residuals(
+        self
+    ) -> pl.DataFrame | None:
+
+        """
+        Placeholder
+        """
+
+        return self.residuals
+
     def interpolation_add(
         self,
         file_path: str
@@ -195,6 +205,4 @@ class FoamCase:
         self
     ) -> pl.DataFrame | None:
 
-        if self.interpolation:
-            return self.interpolation
-        return None
+        return self.interpolation

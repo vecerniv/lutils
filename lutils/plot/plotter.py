@@ -140,6 +140,37 @@ class FoamPlot:
         except KeyError:
             print(f'Plot data with label "{label}" not found.')
 
+    def residuals_add(
+        self,
+        case: FoamCase
+    ) -> None:
+
+        """
+        Placeholder
+        """
+
+        res_data = case.get_residuals()
+
+        if not res_data:
+            print(f'No residual data is loaded in case "{case.label}".')
+            return
+
+        self._residual_data[case.label] = res_data.get_columns()
+
+    def residuals_delete(
+        self,
+        case: FoamCase
+    ) -> None:
+
+        """
+        Placeholder
+        """
+
+        try:
+            del self._residual_data[case.label]
+        except KeyError:
+            print(f'Residual data for case "{case.label}" is not loaded.')
+
     def interpolation_add(
         self,
         case: FoamCase,
@@ -179,6 +210,54 @@ class FoamPlot:
             del self._interpolation_data[case.label]
         except KeyError:
             print(f'Interpolation data for case "{case.label}" is not loaded.')
+
+    def plot_residuals(
+        self
+    ) -> None:
+
+        """
+        Placeholder
+        """
+
+        if not self._residual_data:
+            print('No residual data is loaded.')
+            return
+
+        for key, value in self._residual_data.items():
+            output_file = self._plot_dir / f'residuals_{key}.png'
+            self._internal_plot_resiudals(output_file, value, key)
+
+    def _internal_plot_resiudals(
+        self,
+        output_file: Path,
+        res_data: pl.DataFrame,
+        label: str
+    ) -> None:
+
+        """
+        Placeholder
+        """
+
+        ax: Axes
+        fig: fgr.Figure
+
+        fig, ax = plt.subplots()
+
+        ax.set_title(f'Residuals - {label}')
+        ax.set_xlabel('Iteration')
+        ax.set_ylabel('Residual')
+
+        ax.set_yscale('log')
+
+        for col in res_data:
+            if col.name == 'Time':
+                continue
+            ax.plot(res_data[0], col, label=col.name)
+
+        fig.legend()
+        fig.savefig(output_file)
+
+        plt.close(fig)
 
     def plot_interpolation(
         self
