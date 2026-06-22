@@ -158,7 +158,7 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="51">        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
 </span><span data-line="52">        <span class="bp">self</span><span class="o">.</span><span class="n">of_distribution</span> <span class="o">=</span> <span class="n">of_distribution</span>
 </span><span data-line="53">        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span data-line="54">        <span class="bp">self</span><span class="o">.</span><span class="n">resiudals</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="54">        <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span data-line="55">        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="kc">None</span>
 </span><span data-line="56">
 <div class="viewcode-block" id="FoamCase.run_script">
@@ -277,7 +277,7 @@ data-aria-dark="Switch to auto color mode">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.residuals_add">[docs]</a>
 </span><span data-line="160">    <span class="k">def</span><span class="w"> </span><span class="nf">residuals_add</span><span class="p">(</span>
 </span><span data-line="161">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="162">        <span class="n">file_path</span><span class="p">:</span> <span class="n">Path</span>
+</span><span data-line="162">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
 </span><span data-line="163">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 </span><span data-line="164">
 </span><span data-line="165"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -297,31 +297,42 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="179">        <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span> <span class="o">=</span> <span class="n">ResidualData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
 </span><span data-line="180">
+<div class="viewcode-block" id="FoamCase.get_residuals">
+<a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.get_residuals">[docs]</a>
+</span><span data-line="181">    <span class="k">def</span><span class="w"> </span><span class="nf">get_residuals</span><span class="p">(</span>
+</span><span data-line="182">        <span class="bp">self</span>
+</span><span data-line="183">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="184">
+</span><span data-line="185"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="186"><span class="sd">        Placeholder</span>
+</span><span data-line="187"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="188">
+</span><span data-line="189">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span></div>
+
+</span><span data-line="190">
 <div class="viewcode-block" id="FoamCase.interpolation_add">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.interpolation_add">[docs]</a>
-</span><span data-line="181">    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation_add</span><span class="p">(</span>
-</span><span data-line="182">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="183">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="184">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="185">
-</span><span data-line="186"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="187"><span class="sd">        Placeholder</span>
-</span><span data-line="188"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="189">
-</span><span data-line="190">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
-</span><span data-line="191">
-</span><span data-line="192">        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">InterpolationData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+</span><span data-line="191">    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation_add</span><span class="p">(</span>
+</span><span data-line="192">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="193">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="194">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="195">
+</span><span data-line="196"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="197"><span class="sd">        Placeholder</span>
+</span><span data-line="198"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="199">
+</span><span data-line="200">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
+</span><span data-line="201">
+</span><span data-line="202">        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">InterpolationData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
-</span><span data-line="193">
+</span><span data-line="203">
 <div class="viewcode-block" id="FoamCase.get_interpolation">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.get_interpolation">[docs]</a>
-</span><span data-line="194">    <span class="k">def</span><span class="w"> </span><span class="nf">get_interpolation</span><span class="p">(</span>
-</span><span data-line="195">        <span class="bp">self</span>
-</span><span data-line="196">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="197">
-</span><span data-line="198">        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span><span class="p">:</span>
-</span><span data-line="199">            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span>
-</span><span data-line="200">        <span class="k">return</span> <span class="kc">None</span></div>
+</span><span data-line="204">    <span class="k">def</span><span class="w"> </span><span class="nf">get_interpolation</span><span class="p">(</span>
+</span><span data-line="205">        <span class="bp">self</span>
+</span><span data-line="206">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="207">
+</span><span data-line="208">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span></div>
 </div>
 
 </span></pre></div>
