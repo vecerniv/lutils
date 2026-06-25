@@ -2,7 +2,8 @@ from pathlib import Path
 import subprocess
 import polars as pl
 
-from lutils.core.data import FieldData, ResidualData, InterpolationData
+from lutils.core.data import FieldData, InterpolationData, ResidualData
+from lutils.core.utils import get_latest_time
 
 
 class FoamCase:
@@ -16,7 +17,7 @@ class FoamCase:
     Parameters
     ----------
     case_path : str
-        The file path to the OpenFOAM case directory.
+
     label : str
         A unique label or identifier for the case.
     of_distribution : str, optional
@@ -180,7 +181,7 @@ class FoamCase:
 
     def get_residuals(
         self
-    ) -> pl.DataFrame | None:
+    ) -> ResidualData | None:
 
         """
         Placeholder
@@ -203,6 +204,57 @@ class FoamCase:
 
     def get_interpolation(
         self
-    ) -> pl.DataFrame | None:
+    ) -> InterpolationData | None:
+
+        """
+        Placeholder
+        """
 
         return self.interpolation
+
+    def get_yplus(
+        self
+    ) -> None:
+
+        """
+        Placeholder
+        """
+
+        dir = get_latest_time(self.case_path)
+        if dir <= 0:
+            print(f'No simulation time was found for case "{self.label}"')
+            return
+
+        dir = str(dir)
+        file = self.case_path / dir / 'yOrthoi'
+
+        if not file.exists():
+            print(f'"yOtrhoi" not found in directory "{dir}"' +
+                  f' for case "{self.label}".')
+            return
+
+        data = []
+        in_brackets = False
+        with file.open() as f:
+            for line in f:
+                clean_line = line.strip()
+                if clean_line == '(':
+                     in_brackets = True
+                     continue
+
+                if clean_line == ')':
+                    in_brackets = False
+                    continue
+
+                if in_brackets:
+                    value = float(line)
+                    if value <= 0:
+                        continue
+                    data.append(value)
+
+        df = pl.DataFrame(data)
+
+        print(f'y+ for case: {self.label}')
+        print(f'    mean: {df.mean().item()}')
+        print(f'    min:  {df.min().item()}')
+        print(f'    max:  {df.max().item()}')
