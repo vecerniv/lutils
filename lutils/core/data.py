@@ -165,12 +165,12 @@ class InterpolationData:
 
         # Only get data in the specified scope. Sphagetti filtering for now
         scoped = self.data.filter(
-                pl.col("intPoint0_x") >= lower_corner[0],
-                pl.col("intPoint0_x") <= upper_corner[0],
-                pl.col("intPoint0_y") >= lower_corner[1],
-                pl.col("intPoint0_y") <= upper_corner[1],
-                pl.col("intPoint0_z") >= lower_corner[2],
-                pl.col("intPoint0_z") <= upper_corner[2],
+                pl.col("bCell_x") >= lower_corner[0],
+                pl.col("bCell_x") <= upper_corner[0],
+                pl.col("bCell_y") >= lower_corner[1],
+                pl.col("bCell_y") <= upper_corner[1],
+                pl.col("bCell_z") >= lower_corner[2],
+                pl.col("bCell_z") <= upper_corner[2],
                 )
 
         return scoped.clone()

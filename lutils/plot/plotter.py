@@ -286,42 +286,60 @@ class FoamPlot:
         Placeholder
         """
 
-        # Get the interpolation length
+        # Get point distances
         magnitude_x = int_data['intPoint0_x'] - int_data['intPoint2_x']
-
         magnitude_y = int_data['intPoint0_y'] - int_data['intPoint2_y']
 
+        back_magnitude_x = int_data['intPoint0_x'] - int_data['bCell_x']
+        back_magnitude_y = int_data['intPoint0_y'] - int_data['bCell_y']
+
+        # Calculate line lengths
         length_interpolation = np.sqrt(
             magnitude_x**2
             + magnitude_y**2
         ).max()
 
-        # Get the surface normal length
+        length_back = np.sqrt(
+                back_magnitude_x**2
+                + back_magnitude_y**2
+                ).max()
+
         length_surfNorm = np.sqrt(
             int_data['surfNorm_x']**2
             + int_data['surfNorm_y']**2
         ).max()
 
-        # Calculate the scaling factor
-        t = length_interpolation / length_surfNorm
+        # Calculate the scaling factors
+        t_front = length_interpolation / length_surfNorm
+        t_back = length_back / length_surfNorm
 
-        # Calculated the scaled surface normals
+        # Calculated the scaled surface normal
+        # start and end points
         # x = Ax + t(Bx - Ax), y = Ay + t(By - Ay)
-        surfNorm_x = (
-            int_data['intPoint0_x']
-            + t*int_data['surfNorm_x']
+        start_x = (
+            int_data['bCell_x']
+            - t_back*int_data['surfNorm_x']
         )
-        surfNorm_y = (
-            int_data['intPoint0_y']
-            + t*int_data['surfNorm_y']
+        start_y = (
+            int_data['bCell_y']
+            - t_back*int_data['surfNorm_y']
+        )
+
+        end_x = (
+            int_data['bCell_x']
+            + t_front*int_data['surfNorm_x']
+        )
+        end_y = (
+            int_data['bCell_y']
+            + t_front*int_data['surfNorm_y']
         )
 
         # Reshape to fit LineCollection structure
         segments = np.column_stack((
-            int_data['intPoint0_x'],
-            int_data['intPoint0_y'],
-            surfNorm_x,
-            surfNorm_y
+            start_x,
+            start_y,
+            end_x,
+            end_y
         )).reshape(-1, 2, 2)
 
         lines = LineCollection(
@@ -343,6 +361,15 @@ class FoamPlot:
         # Scaled surface normals
         ax.add_collection(lines)
         ax.autoscale()
+
+        # Boundary cell point
+        ax.scatter(
+            x=int_data['bCell_x'],
+            y=int_data['bCell_y'],
+            marker='o',
+            color='black',
+            label='bCell'
+        )
 
         # First interpolation points - wall
         ax.scatter(
