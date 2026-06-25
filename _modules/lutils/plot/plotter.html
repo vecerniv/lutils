@@ -417,205 +417,232 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="286"><span class="sd">        Placeholder</span>
 </span><span data-line="287"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span data-line="288">
-</span><span data-line="289">        <span class="c1"># Get the interpolation length</span>
+</span><span data-line="289">        <span class="c1"># Get point distances</span>
 </span><span data-line="290">        <span class="n">magnitude_x</span> <span class="o">=</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_x&#39;</span><span class="p">]</span>
-</span><span data-line="291">
-</span><span data-line="292">        <span class="n">magnitude_y</span> <span class="o">=</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_y&#39;</span><span class="p">]</span>
-</span><span data-line="293">
-</span><span data-line="294">        <span class="n">length_interpolation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-</span><span data-line="295">            <span class="n">magnitude_x</span><span class="o">**</span><span class="mi">2</span>
-</span><span data-line="296">            <span class="o">+</span> <span class="n">magnitude_y</span><span class="o">**</span><span class="mi">2</span>
-</span><span data-line="297">        <span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-</span><span data-line="298">
-</span><span data-line="299">        <span class="c1"># Get the surface normal length</span>
-</span><span data-line="300">        <span class="n">length_surfNorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
-</span><span data-line="301">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_x&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
-</span><span data-line="302">            <span class="o">+</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_y&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
-</span><span data-line="303">        <span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-</span><span data-line="304">
-</span><span data-line="305">        <span class="c1"># Calculate the scaling factor</span>
-</span><span data-line="306">        <span class="n">t</span> <span class="o">=</span> <span class="n">length_interpolation</span> <span class="o">/</span> <span class="n">length_surfNorm</span>
-</span><span data-line="307">
-</span><span data-line="308">        <span class="c1"># Calculated the scaled surface normals</span>
-</span><span data-line="309">        <span class="c1"># x = Ax + t(Bx - Ax), y = Ay + t(By - Ay)</span>
-</span><span data-line="310">        <span class="n">surfNorm_x</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="311">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">]</span>
-</span><span data-line="312">            <span class="o">+</span> <span class="n">t</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_x&#39;</span><span class="p">]</span>
-</span><span data-line="313">        <span class="p">)</span>
-</span><span data-line="314">        <span class="n">surfNorm_y</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="315">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">]</span>
-</span><span data-line="316">            <span class="o">+</span> <span class="n">t</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_y&#39;</span><span class="p">]</span>
-</span><span data-line="317">        <span class="p">)</span>
-</span><span data-line="318">
-</span><span data-line="319">        <span class="c1"># Reshape to fit LineCollection structure</span>
-</span><span data-line="320">        <span class="n">segments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span>
-</span><span data-line="321">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">],</span>
-</span><span data-line="322">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">],</span>
-</span><span data-line="323">            <span class="n">surfNorm_x</span><span class="p">,</span>
-</span><span data-line="324">            <span class="n">surfNorm_y</span>
-</span><span data-line="325">        <span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-</span><span data-line="326">
-</span><span data-line="327">        <span class="n">lines</span> <span class="o">=</span> <span class="n">LineCollection</span><span class="p">(</span>
-</span><span data-line="328">            <span class="n">segments</span><span class="p">,</span>
-</span><span data-line="329">            <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
-</span><span data-line="330">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;surfNorm&#39;</span>
+</span><span data-line="291">        <span class="n">magnitude_y</span> <span class="o">=</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_y&#39;</span><span class="p">]</span>
+</span><span data-line="292">
+</span><span data-line="293">        <span class="n">back_magnitude_x</span> <span class="o">=</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_x&#39;</span><span class="p">]</span>
+</span><span data-line="294">        <span class="n">back_magnitude_y</span> <span class="o">=</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_y&#39;</span><span class="p">]</span>
+</span><span data-line="295">
+</span><span data-line="296">        <span class="c1"># Calculate line lengths</span>
+</span><span data-line="297">        <span class="n">length_interpolation</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+</span><span data-line="298">            <span class="n">magnitude_x</span><span class="o">**</span><span class="mi">2</span>
+</span><span data-line="299">            <span class="o">+</span> <span class="n">magnitude_y</span><span class="o">**</span><span class="mi">2</span>
+</span><span data-line="300">        <span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span><span data-line="301">
+</span><span data-line="302">        <span class="n">length_back</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+</span><span data-line="303">                <span class="n">back_magnitude_x</span><span class="o">**</span><span class="mi">2</span>
+</span><span data-line="304">                <span class="o">+</span> <span class="n">back_magnitude_y</span><span class="o">**</span><span class="mi">2</span>
+</span><span data-line="305">                <span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span><span data-line="306">
+</span><span data-line="307">        <span class="n">length_surfNorm</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span>
+</span><span data-line="308">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_x&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+</span><span data-line="309">            <span class="o">+</span> <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_y&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>
+</span><span data-line="310">        <span class="p">)</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</span><span data-line="311">
+</span><span data-line="312">        <span class="c1"># Calculate the scaling factors</span>
+</span><span data-line="313">        <span class="n">t_front</span> <span class="o">=</span> <span class="n">length_interpolation</span> <span class="o">/</span> <span class="n">length_surfNorm</span>
+</span><span data-line="314">        <span class="n">t_back</span> <span class="o">=</span> <span class="n">length_back</span> <span class="o">/</span> <span class="n">length_surfNorm</span>
+</span><span data-line="315">
+</span><span data-line="316">        <span class="c1"># Calculated the scaled surface normal</span>
+</span><span data-line="317">        <span class="c1"># start and end points</span>
+</span><span data-line="318">        <span class="c1"># x = Ax + t(Bx - Ax), y = Ay + t(By - Ay)</span>
+</span><span data-line="319">        <span class="n">start_x</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="320">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_x&#39;</span><span class="p">]</span>
+</span><span data-line="321">            <span class="o">-</span> <span class="n">t_back</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_x&#39;</span><span class="p">]</span>
+</span><span data-line="322">        <span class="p">)</span>
+</span><span data-line="323">        <span class="n">start_y</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="324">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_y&#39;</span><span class="p">]</span>
+</span><span data-line="325">            <span class="o">-</span> <span class="n">t_back</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_y&#39;</span><span class="p">]</span>
+</span><span data-line="326">        <span class="p">)</span>
+</span><span data-line="327">
+</span><span data-line="328">        <span class="n">end_x</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="329">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_x&#39;</span><span class="p">]</span>
+</span><span data-line="330">            <span class="o">+</span> <span class="n">t_front</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_x&#39;</span><span class="p">]</span>
 </span><span data-line="331">        <span class="p">)</span>
-</span><span data-line="332">
-</span><span data-line="333">        <span class="c1"># Declare ax and fig, because hinting for mpl is sus</span>
-</span><span data-line="334">        <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span>
-</span><span data-line="335">        <span class="n">fig</span><span class="p">:</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span>
+</span><span data-line="332">        <span class="n">end_y</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="333">            <span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_y&#39;</span><span class="p">]</span>
+</span><span data-line="334">            <span class="o">+</span> <span class="n">t_front</span><span class="o">*</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;surfNorm_y&#39;</span><span class="p">]</span>
+</span><span data-line="335">        <span class="p">)</span>
 </span><span data-line="336">
-</span><span data-line="337">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-</span><span data-line="338">
-</span><span data-line="339">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;IBM interpolation - </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-</span><span data-line="340">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-</span><span data-line="341">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
-</span><span data-line="342">
-</span><span data-line="343">        <span class="c1"># Scaled surface normals</span>
-</span><span data-line="344">        <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
-</span><span data-line="345">        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">()</span>
-</span><span data-line="346">
-</span><span data-line="347">        <span class="c1"># First interpolation points - wall</span>
-</span><span data-line="348">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-</span><span data-line="349">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">],</span>
-</span><span data-line="350">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">],</span>
-</span><span data-line="351">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
-</span><span data-line="352">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span>
-</span><span data-line="353">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint0&#39;</span>
-</span><span data-line="354">        <span class="p">)</span>
-</span><span data-line="355">
-</span><span data-line="356">        <span class="c1"># Second interpolation points - first in-stream</span>
-</span><span data-line="357">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-</span><span data-line="358">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint1_x&#39;</span><span class="p">],</span>
-</span><span data-line="359">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint1_y&#39;</span><span class="p">],</span>
-</span><span data-line="360">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
-</span><span data-line="361">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
-</span><span data-line="362">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint1&#39;</span>
-</span><span data-line="363">        <span class="p">)</span>
+</span><span data-line="337">        <span class="c1"># Reshape to fit LineCollection structure</span>
+</span><span data-line="338">        <span class="n">segments</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">column_stack</span><span class="p">((</span>
+</span><span data-line="339">            <span class="n">start_x</span><span class="p">,</span>
+</span><span data-line="340">            <span class="n">start_y</span><span class="p">,</span>
+</span><span data-line="341">            <span class="n">end_x</span><span class="p">,</span>
+</span><span data-line="342">            <span class="n">end_y</span>
+</span><span data-line="343">        <span class="p">))</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span data-line="344">
+</span><span data-line="345">        <span class="n">lines</span> <span class="o">=</span> <span class="n">LineCollection</span><span class="p">(</span>
+</span><span data-line="346">            <span class="n">segments</span><span class="p">,</span>
+</span><span data-line="347">            <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+</span><span data-line="348">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;surfNorm&#39;</span>
+</span><span data-line="349">        <span class="p">)</span>
+</span><span data-line="350">
+</span><span data-line="351">        <span class="c1"># Declare ax and fig, because hinting for mpl is sus</span>
+</span><span data-line="352">        <span class="n">ax</span><span class="p">:</span> <span class="n">Axes</span>
+</span><span data-line="353">        <span class="n">fig</span><span class="p">:</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span>
+</span><span data-line="354">
+</span><span data-line="355">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+</span><span data-line="356">
+</span><span data-line="357">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;IBM interpolation - </span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="358">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
+</span><span data-line="359">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">)</span>
+</span><span data-line="360">
+</span><span data-line="361">        <span class="c1"># Scaled surface normals</span>
+</span><span data-line="362">        <span class="n">ax</span><span class="o">.</span><span class="n">add_collection</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
+</span><span data-line="363">        <span class="n">ax</span><span class="o">.</span><span class="n">autoscale</span><span class="p">()</span>
 </span><span data-line="364">
-</span><span data-line="365">        <span class="c1"># Third interpolation points - second in-stream</span>
+</span><span data-line="365">        <span class="c1"># Boundary cell point</span>
 </span><span data-line="366">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-</span><span data-line="367">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_x&#39;</span><span class="p">],</span>
-</span><span data-line="368">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_y&#39;</span><span class="p">],</span>
-</span><span data-line="369">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
-</span><span data-line="370">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
-</span><span data-line="371">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint2&#39;</span>
+</span><span data-line="367">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_x&#39;</span><span class="p">],</span>
+</span><span data-line="368">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;bCell_y&#39;</span><span class="p">],</span>
+</span><span data-line="369">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;o&#39;</span><span class="p">,</span>
+</span><span data-line="370">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span>
+</span><span data-line="371">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;bCell&#39;</span>
 </span><span data-line="372">        <span class="p">)</span>
 </span><span data-line="373">
-</span><span data-line="374">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-</span><span data-line="375">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
-</span><span data-line="376">        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
-</span><span data-line="377">
+</span><span data-line="374">        <span class="c1"># First interpolation points - wall</span>
+</span><span data-line="375">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="376">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_x&#39;</span><span class="p">],</span>
+</span><span data-line="377">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint0_y&#39;</span><span class="p">],</span>
+</span><span data-line="378">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+</span><span data-line="379">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">,</span>
+</span><span data-line="380">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint0&#39;</span>
+</span><span data-line="381">        <span class="p">)</span>
+</span><span data-line="382">
+</span><span data-line="383">        <span class="c1"># Second interpolation points - first in-stream</span>
+</span><span data-line="384">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="385">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint1_x&#39;</span><span class="p">],</span>
+</span><span data-line="386">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint1_y&#39;</span><span class="p">],</span>
+</span><span data-line="387">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+</span><span data-line="388">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;blue&#39;</span><span class="p">,</span>
+</span><span data-line="389">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint1&#39;</span>
+</span><span data-line="390">        <span class="p">)</span>
+</span><span data-line="391">
+</span><span data-line="392">        <span class="c1"># Third interpolation points - second in-stream</span>
+</span><span data-line="393">        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="394">            <span class="n">x</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_x&#39;</span><span class="p">],</span>
+</span><span data-line="395">            <span class="n">y</span><span class="o">=</span><span class="n">int_data</span><span class="p">[</span><span class="s1">&#39;intPoint2_y&#39;</span><span class="p">],</span>
+</span><span data-line="396">            <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span>
+</span><span data-line="397">            <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">,</span>
+</span><span data-line="398">            <span class="n">label</span><span class="o">=</span><span class="s1">&#39;intPoint2&#39;</span>
+</span><span data-line="399">        <span class="p">)</span>
+</span><span data-line="400">
+</span><span data-line="401">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span><span data-line="402">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">output_file</span><span class="p">)</span>
+</span><span data-line="403">        <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</span><span data-line="404">
 <div class="viewcode-block" id="FoamPlot.plot_profile">
 <a class="viewcode-back" href="../../../plot.html#lutils.plot.FoamPlot.plot_profile">[docs]</a>
-</span><span data-line="378">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_profile</span><span class="p">(</span>
-</span><span data-line="379">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="380">        <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="381">        <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="382">        <span class="n">data_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="383">        <span class="n">position_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="384">        <span class="n">position_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-</span><span data-line="385">        <span class="n">position_tol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
-</span><span data-line="386">        <span class="n">labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
-</span><span data-line="387">        <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lutils.profile&#39;</span><span class="p">,</span>
-</span><span data-line="388">        <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-</span><span data-line="389">        <span class="n">out_csv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
-</span><span data-line="390">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="391">
-</span><span data-line="392"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="393"><span class="sd">        Generates a profile plot by extracting data along a geometric slice.</span>
-</span><span data-line="394">
-</span><span data-line="395"><span class="sd">        This method filters 3D field data to find cells close to a specific</span>
-</span><span data-line="396"><span class="sd">        coordinate (&#39;position_value&#39;) along a &#39;position_axis&#39;, effectively</span>
-</span><span data-line="397"><span class="sd">        creating a line plot through the domain.</span>
-</span><span data-line="398">
-</span><span data-line="399"><span class="sd">        Parameters</span>
-</span><span data-line="400"><span class="sd">        ----------</span>
-</span><span data-line="401"><span class="sd">        output_file : str</span>
-</span><span data-line="402"><span class="sd">            The filename for the saved plot (e.g., &#39;profile.png&#39;).</span>
-</span><span data-line="403"><span class="sd">        field : str</span>
-</span><span data-line="404"><span class="sd">            The specific scalar component of the field to plot.</span>
-</span><span data-line="405"><span class="sd">        data_axis : str</span>
-</span><span data-line="406"><span class="sd">            The axis to plot against (usually the independent variable axis).</span>
-</span><span data-line="407"><span class="sd">        position_axis : str</span>
-</span><span data-line="408"><span class="sd">            The axis used to slice the domain (the fixed coordinate axis).</span>
-</span><span data-line="409"><span class="sd">        position_value : float</span>
-</span><span data-line="410"><span class="sd">            The coordinate value along `position_axis` where the slice is taken.</span>
-</span><span data-line="411"><span class="sd">        position_tol : float</span>
-</span><span data-line="412"><span class="sd">            The tolerance width around `position_value` to include cells.</span>
-</span><span data-line="413"><span class="sd">        labels : str, optional</span>
-</span><span data-line="414"><span class="sd">            The label configuration preset or path. Default is &#39;velocity&#39;.</span>
-</span><span data-line="415"><span class="sd">        style : str, optional</span>
-</span><span data-line="416"><span class="sd">            The matplotlib style sheet to use. Default is &#39;lutils.plt_cfg.lutils&#39;.</span>
-</span><span data-line="417"><span class="sd">        figure_id : str or int or None, optional</span>
-</span><span data-line="418"><span class="sd">            The unique identifier for the figure. If None, a new figure is created.</span>
-</span><span data-line="419"><span class="sd">        out_csv : bool, optional</span>
-</span><span data-line="420"><span class="sd">            If True, exports the sliced data to CSV files in the plot directory.</span>
-</span><span data-line="421"><span class="sd">            Default is True.</span>
-</span><span data-line="422"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="423">
-</span><span data-line="424">        <span class="c1"># Get label and style</span>
-</span><span data-line="425">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_config</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
-</span><span data-line="426">
-</span><span data-line="427">        <span class="c1"># Retrieve figure</span>
-</span><span data-line="428">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figure_ax</span><span class="p">(</span><span class="n">figure_id</span><span class="p">)</span>
-</span><span data-line="429">
-</span><span data-line="430">        <span class="c1"># Set labels</span>
-</span><span data-line="431">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span>
-</span><span data-line="432">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">])</span>
-</span><span data-line="433">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">])</span>
-</span><span data-line="434">
-</span><span data-line="435">        <span class="c1"># Plot all plot data entries</span>
-</span><span data-line="436">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-</span><span data-line="437">            <span class="n">trimmed</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_cells</span><span class="p">(</span>
-</span><span data-line="438">                <span class="n">position_axis</span><span class="p">,</span>
-</span><span data-line="439">                <span class="n">position_value</span><span class="p">,</span>
-</span><span data-line="440">                <span class="n">data_axis</span><span class="p">,</span>
-</span><span data-line="441">                <span class="n">position_tol</span>
-</span><span data-line="442">            <span class="p">)</span>
-</span><span data-line="443">            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
-</span><span data-line="444">                <span class="n">trimmed</span><span class="p">[</span><span class="n">data_axis</span><span class="p">],</span>
-</span><span data-line="445">                <span class="n">trimmed</span><span class="p">[</span><span class="n">field</span><span class="p">],</span>
-</span><span data-line="446">                <span class="n">label</span><span class="o">=</span><span class="n">key</span>
-</span><span data-line="447">            <span class="p">)</span>
-</span><span data-line="448">            <span class="k">if</span> <span class="n">out_csv</span><span class="p">:</span>
-</span><span data-line="449">                <span class="n">trimmed</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">))</span>
+</span><span data-line="405">    <span class="k">def</span><span class="w"> </span><span class="nf">plot_profile</span><span class="p">(</span>
+</span><span data-line="406">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="407">        <span class="n">output_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="408">        <span class="n">field</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="409">        <span class="n">data_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="410">        <span class="n">position_axis</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="411">        <span class="n">position_value</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="412">        <span class="n">position_tol</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+</span><span data-line="413">        <span class="n">labels</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;velocity&#39;</span><span class="p">,</span>
+</span><span data-line="414">        <span class="n">style</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;lutils.profile&#39;</span><span class="p">,</span>
+</span><span data-line="415">        <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+</span><span data-line="416">        <span class="n">out_csv</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="417">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="418">
+</span><span data-line="419"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="420"><span class="sd">        Generates a profile plot by extracting data along a geometric slice.</span>
+</span><span data-line="421">
+</span><span data-line="422"><span class="sd">        This method filters 3D field data to find cells close to a specific</span>
+</span><span data-line="423"><span class="sd">        coordinate (&#39;position_value&#39;) along a &#39;position_axis&#39;, effectively</span>
+</span><span data-line="424"><span class="sd">        creating a line plot through the domain.</span>
+</span><span data-line="425">
+</span><span data-line="426"><span class="sd">        Parameters</span>
+</span><span data-line="427"><span class="sd">        ----------</span>
+</span><span data-line="428"><span class="sd">        output_file : str</span>
+</span><span data-line="429"><span class="sd">            The filename for the saved plot (e.g., &#39;profile.png&#39;).</span>
+</span><span data-line="430"><span class="sd">        field : str</span>
+</span><span data-line="431"><span class="sd">            The specific scalar component of the field to plot.</span>
+</span><span data-line="432"><span class="sd">        data_axis : str</span>
+</span><span data-line="433"><span class="sd">            The axis to plot against (usually the independent variable axis).</span>
+</span><span data-line="434"><span class="sd">        position_axis : str</span>
+</span><span data-line="435"><span class="sd">            The axis used to slice the domain (the fixed coordinate axis).</span>
+</span><span data-line="436"><span class="sd">        position_value : float</span>
+</span><span data-line="437"><span class="sd">            The coordinate value along `position_axis` where the slice is taken.</span>
+</span><span data-line="438"><span class="sd">        position_tol : float</span>
+</span><span data-line="439"><span class="sd">            The tolerance width around `position_value` to include cells.</span>
+</span><span data-line="440"><span class="sd">        labels : str, optional</span>
+</span><span data-line="441"><span class="sd">            The label configuration preset or path. Default is &#39;velocity&#39;.</span>
+</span><span data-line="442"><span class="sd">        style : str, optional</span>
+</span><span data-line="443"><span class="sd">            The matplotlib style sheet to use. Default is &#39;lutils.plt_cfg.lutils&#39;.</span>
+</span><span data-line="444"><span class="sd">        figure_id : str or int or None, optional</span>
+</span><span data-line="445"><span class="sd">            The unique identifier for the figure. If None, a new figure is created.</span>
+</span><span data-line="446"><span class="sd">        out_csv : bool, optional</span>
+</span><span data-line="447"><span class="sd">            If True, exports the sliced data to CSV files in the plot directory.</span>
+</span><span data-line="448"><span class="sd">            Default is True.</span>
+</span><span data-line="449"><span class="sd">        &quot;&quot;&quot;</span>
 </span><span data-line="450">
-</span><span data-line="451">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-</span><span data-line="452">
-</span><span data-line="453">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="n">output_file</span><span class="p">)</span></div>
+</span><span data-line="451">        <span class="c1"># Get label and style</span>
+</span><span data-line="452">        <span class="n">config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_plot_config</span><span class="p">(</span><span class="n">labels</span><span class="p">,</span> <span class="n">style</span><span class="p">)</span>
+</span><span data-line="453">
+</span><span data-line="454">        <span class="c1"># Retrieve figure</span>
+</span><span data-line="455">        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_figure_ax</span><span class="p">(</span><span class="n">figure_id</span><span class="p">)</span>
+</span><span data-line="456">
+</span><span data-line="457">        <span class="c1"># Set labels</span>
+</span><span data-line="458">        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;title&#39;</span><span class="p">])</span>
+</span><span data-line="459">        <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;xlabel&#39;</span><span class="p">])</span>
+</span><span data-line="460">        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ylabel&#39;</span><span class="p">])</span>
+</span><span data-line="461">
+</span><span data-line="462">        <span class="c1"># Plot all plot data entries</span>
+</span><span data-line="463">        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_plot_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+</span><span data-line="464">            <span class="n">trimmed</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_cells</span><span class="p">(</span>
+</span><span data-line="465">                <span class="n">position_axis</span><span class="p">,</span>
+</span><span data-line="466">                <span class="n">position_value</span><span class="p">,</span>
+</span><span data-line="467">                <span class="n">data_axis</span><span class="p">,</span>
+</span><span data-line="468">                <span class="n">position_tol</span>
+</span><span data-line="469">            <span class="p">)</span>
+</span><span data-line="470">            <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span>
+</span><span data-line="471">                <span class="n">trimmed</span><span class="p">[</span><span class="n">data_axis</span><span class="p">],</span>
+</span><span data-line="472">                <span class="n">trimmed</span><span class="p">[</span><span class="n">field</span><span class="p">],</span>
+</span><span data-line="473">                <span class="n">label</span><span class="o">=</span><span class="n">key</span>
+</span><span data-line="474">            <span class="p">)</span>
+</span><span data-line="475">            <span class="k">if</span> <span class="n">out_csv</span><span class="p">:</span>
+</span><span data-line="476">                <span class="n">trimmed</span><span class="o">.</span><span class="n">write_csv</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="o">+</span><span class="s1">&#39;.csv&#39;</span><span class="p">))</span>
+</span><span data-line="477">
+</span><span data-line="478">        <span class="n">fig</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</span><span data-line="479">
+</span><span data-line="480">        <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_plot_dir</span> <span class="o">/</span> <span class="n">output_file</span><span class="p">)</span></div>
 
-</span><span data-line="454">
-</span><span data-line="455">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_figure_ax</span><span class="p">(</span>
-</span><span data-line="456">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="457">        <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
-</span><span data-line="458">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
-</span><span data-line="459">
-</span><span data-line="460"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="461"><span class="sd">        Retrieves an existing figure or creates a new one.</span>
-</span><span data-line="462">
-</span><span data-line="463"><span class="sd">        Parameters</span>
-</span><span data-line="464"><span class="sd">        ----------</span>
-</span><span data-line="465"><span class="sd">        figure_id : str or int or None</span>
-</span><span data-line="466"><span class="sd">            A unique identifier for the figure.</span>
-</span><span data-line="467">
-</span><span data-line="468"><span class="sd">        Returns</span>
-</span><span data-line="469"><span class="sd">        -------</span>
-</span><span data-line="470"><span class="sd">        matplotlib.figure.Figure</span>
-</span><span data-line="471"><span class="sd">            An active matplotlib figure object.</span>
-</span><span data-line="472"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="473">
-</span><span data-line="474">        <span class="k">if</span> <span class="n">figure_id</span><span class="p">:</span>
-</span><span data-line="475">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
-</span><span data-line="476">                <span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span>
-</span><span data-line="477">                <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figure_id</span><span class="p">)</span>
-</span><span data-line="478">            <span class="p">)</span>
-</span><span data-line="479">            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
-</span><span data-line="480">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="481">            <span class="n">raw_fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
-</span><span data-line="482">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">raw_fig</span><span class="p">)</span>
-</span><span data-line="483">
-</span><span data-line="484">        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
+</span><span data-line="481">
+</span><span data-line="482">    <span class="k">def</span><span class="w"> </span><span class="nf">_get_figure_ax</span><span class="p">(</span>
+</span><span data-line="483">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="484">        <span class="n">figure_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span>
+</span><span data-line="485">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">fgr</span><span class="o">.</span><span class="n">Axes</span><span class="p">]:</span>
+</span><span data-line="486">
+</span><span data-line="487"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="488"><span class="sd">        Retrieves an existing figure or creates a new one.</span>
+</span><span data-line="489">
+</span><span data-line="490"><span class="sd">        Parameters</span>
+</span><span data-line="491"><span class="sd">        ----------</span>
+</span><span data-line="492"><span class="sd">        figure_id : str or int or None</span>
+</span><span data-line="493"><span class="sd">            A unique identifier for the figure.</span>
+</span><span data-line="494">
+</span><span data-line="495"><span class="sd">        Returns</span>
+</span><span data-line="496"><span class="sd">        -------</span>
+</span><span data-line="497"><span class="sd">        matplotlib.figure.Figure</span>
+</span><span data-line="498"><span class="sd">            An active matplotlib figure object.</span>
+</span><span data-line="499"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="500">
+</span><span data-line="501">        <span class="k">if</span> <span class="n">figure_id</span><span class="p">:</span>
+</span><span data-line="502">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+</span><span data-line="503">                <span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span>
+</span><span data-line="504">                <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figure_id</span><span class="p">)</span>
+</span><span data-line="505">            <span class="p">)</span>
+</span><span data-line="506">            <span class="n">ax</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+</span><span data-line="507">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="508">            <span class="n">raw_fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+</span><span data-line="509">            <span class="n">fig</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">fgr</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">raw_fig</span><span class="p">)</span>
+</span><span data-line="510">
+</span><span data-line="511">        <span class="k">return</span> <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span></div>
 
 </span></pre></div>
         </article><button class="back-to-top" type="button">

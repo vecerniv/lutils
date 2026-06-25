@@ -107,232 +107,287 @@ data-aria-dark="Switch to auto color mode">
 </span><span data-line="2"><span class="kn">import</span><span class="w"> </span><span class="nn">subprocess</span>
 </span><span data-line="3"><span class="kn">import</span><span class="w"> </span><span class="nn">polars</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pl</span>
 </span><span data-line="4">
-</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">lutils.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldData</span><span class="p">,</span> <span class="n">ResidualData</span><span class="p">,</span> <span class="n">InterpolationData</span>
-</span><span data-line="6">
+</span><span data-line="5"><span class="kn">from</span><span class="w"> </span><span class="nn">lutils.core.data</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldData</span><span class="p">,</span> <span class="n">InterpolationData</span><span class="p">,</span> <span class="n">ResidualData</span>
+</span><span data-line="6"><span class="kn">from</span><span class="w"> </span><span class="nn">lutils.core.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_latest_time</span>
 </span><span data-line="7">
+</span><span data-line="8">
 <div class="viewcode-block" id="FoamCase">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase">[docs]</a>
-</span><span data-line="8"><span class="k">class</span><span class="w"> </span><span class="nc">FoamCase</span><span class="p">:</span>
-</span><span data-line="9">
-</span><span data-line="10"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="11"><span class="sd">    A base class representing an OpenFOAM case.</span>
-</span><span data-line="12">
-</span><span data-line="13"><span class="sd">    This class manages the case directory structure, handles script execution,</span>
-</span><span data-line="14"><span class="sd">    and facilitates the loading and storage of post-processing data.</span>
-</span><span data-line="15">
-</span><span data-line="16"><span class="sd">    Parameters</span>
-</span><span data-line="17"><span class="sd">    ----------</span>
-</span><span data-line="18"><span class="sd">    case_path : str</span>
-</span><span data-line="19"><span class="sd">        The file path to the OpenFOAM case directory.</span>
-</span><span data-line="20"><span class="sd">    label : str</span>
-</span><span data-line="21"><span class="sd">        A unique label or identifier for the case.</span>
-</span><span data-line="22"><span class="sd">    of_distribution : str, optional</span>
-</span><span data-line="23"><span class="sd">        The specific OpenFOAM distribution used.</span>
-</span><span data-line="24"><span class="sd">        Default is org.</span>
-</span><span data-line="25">
-</span><span data-line="26"><span class="sd">    Attributes</span>
-</span><span data-line="27"><span class="sd">    ----------</span>
-</span><span data-line="28"><span class="sd">    case_path : Path</span>
-</span><span data-line="29"><span class="sd">        The file path to the OpenFOAM case directory.</span>
-</span><span data-line="30"><span class="sd">    label : str</span>
-</span><span data-line="31"><span class="sd">        A unique indentifier for the case.</span>
-</span><span data-line="32"><span class="sd">    fields : dict[str, FieldData]</span>
-</span><span data-line="33"><span class="sd">        A dictionary of {field_name: FieldData} values.</span>
-</span><span data-line="34"><span class="sd">    of_distribution : str</span>
-</span><span data-line="35"><span class="sd">        The type of OpenFOAM distribution (&#39;com&#39; for ESI/OpenCFD, &#39;org&#39; for Foundation).</span>
-</span><span data-line="36"><span class="sd">    &quot;&quot;&quot;</span>
-</span><span data-line="37">
-</span><span data-line="38">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
-</span><span data-line="39">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="40">        <span class="n">case_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="41">        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="42">        <span class="n">of_distribution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;org&#39;</span>
-</span><span data-line="43">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="44">
-</span><span data-line="45">        <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">case_path</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
-</span><span data-line="46">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-</span><span data-line="47">                    <span class="sa">f</span><span class="s1">&#39;Case not found at </span><span class="si">{</span><span class="n">case_path</span><span class="si">}</span><span class="s1">.&#39;</span>
-</span><span data-line="48">                <span class="p">)</span>
-</span><span data-line="49">
-</span><span data-line="50">        <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">case_path</span><span class="p">)</span>
-</span><span data-line="51">        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
-</span><span data-line="52">        <span class="bp">self</span><span class="o">.</span><span class="n">of_distribution</span> <span class="o">=</span> <span class="n">of_distribution</span>
-</span><span data-line="53">        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
-</span><span data-line="54">        <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="55">        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="kc">None</span>
-</span><span data-line="56">
+</span><span data-line="9"><span class="k">class</span><span class="w"> </span><span class="nc">FoamCase</span><span class="p">:</span>
+</span><span data-line="10">
+</span><span data-line="11"><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="12"><span class="sd">    A base class representing an OpenFOAM case.</span>
+</span><span data-line="13">
+</span><span data-line="14"><span class="sd">    This class manages the case directory structure, handles script execution,</span>
+</span><span data-line="15"><span class="sd">    and facilitates the loading and storage of post-processing data.</span>
+</span><span data-line="16">
+</span><span data-line="17"><span class="sd">    Parameters</span>
+</span><span data-line="18"><span class="sd">    ----------</span>
+</span><span data-line="19"><span class="sd">    case_path : str</span>
+</span><span data-line="20">
+</span><span data-line="21"><span class="sd">    label : str</span>
+</span><span data-line="22"><span class="sd">        A unique label or identifier for the case.</span>
+</span><span data-line="23"><span class="sd">    of_distribution : str, optional</span>
+</span><span data-line="24"><span class="sd">        The specific OpenFOAM distribution used.</span>
+</span><span data-line="25"><span class="sd">        Default is org.</span>
+</span><span data-line="26">
+</span><span data-line="27"><span class="sd">    Attributes</span>
+</span><span data-line="28"><span class="sd">    ----------</span>
+</span><span data-line="29"><span class="sd">    case_path : Path</span>
+</span><span data-line="30"><span class="sd">        The file path to the OpenFOAM case directory.</span>
+</span><span data-line="31"><span class="sd">    label : str</span>
+</span><span data-line="32"><span class="sd">        A unique indentifier for the case.</span>
+</span><span data-line="33"><span class="sd">    fields : dict[str, FieldData]</span>
+</span><span data-line="34"><span class="sd">        A dictionary of {field_name: FieldData} values.</span>
+</span><span data-line="35"><span class="sd">    of_distribution : str</span>
+</span><span data-line="36"><span class="sd">        The type of OpenFOAM distribution (&#39;com&#39; for ESI/OpenCFD, &#39;org&#39; for Foundation).</span>
+</span><span data-line="37"><span class="sd">    &quot;&quot;&quot;</span>
+</span><span data-line="38">
+</span><span data-line="39">    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+</span><span data-line="40">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="41">        <span class="n">case_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="42">        <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="43">        <span class="n">of_distribution</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s1">&#39;org&#39;</span>
+</span><span data-line="44">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="45">
+</span><span data-line="46">        <span class="k">if</span> <span class="ow">not</span> <span class="n">Path</span><span class="p">(</span><span class="n">case_path</span><span class="p">)</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+</span><span data-line="47">            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+</span><span data-line="48">                    <span class="sa">f</span><span class="s1">&#39;Case not found at </span><span class="si">{</span><span class="n">case_path</span><span class="si">}</span><span class="s1">.&#39;</span>
+</span><span data-line="49">                <span class="p">)</span>
+</span><span data-line="50">
+</span><span data-line="51">        <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">case_path</span><span class="p">)</span>
+</span><span data-line="52">        <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label</span>
+</span><span data-line="53">        <span class="bp">self</span><span class="o">.</span><span class="n">of_distribution</span> <span class="o">=</span> <span class="n">of_distribution</span>
+</span><span data-line="54">        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span data-line="55">        <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="56">        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="kc">None</span>
+</span><span data-line="57">
 <div class="viewcode-block" id="FoamCase.run_script">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.run_script">[docs]</a>
-</span><span data-line="57">    <span class="k">def</span><span class="w"> </span><span class="nf">run_script</span><span class="p">(</span>
-</span><span data-line="58">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="59">        <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="60">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="61">
-</span><span data-line="62"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="63"><span class="sd">        Executes an arbitrary script within the context of the OpenFOAM case.</span>
-</span><span data-line="64">
-</span><span data-line="65"><span class="sd">        Parameters</span>
-</span><span data-line="66"><span class="sd">        ----------</span>
-</span><span data-line="67"><span class="sd">        file_name : str</span>
-</span><span data-line="68"><span class="sd">            The path to the script file. If a relative path is provided, it is</span>
-</span><span data-line="69"><span class="sd">            resolved relative to the case directory. Absolute paths are used as-is.</span>
-</span><span data-line="70">
-</span><span data-line="71"><span class="sd">        Raises</span>
-</span><span data-line="72"><span class="sd">        ------</span>
-</span><span data-line="73"><span class="sd">        FileNotFoundError</span>
-</span><span data-line="74"><span class="sd">            If the script file does not exist at the resolved path.</span>
-</span><span data-line="75"><span class="sd">        RuntimeError</span>
-</span><span data-line="76"><span class="sd">            If the script execution fails (returns a non-zero exit code) or if an</span>
-</span><span data-line="77"><span class="sd">            unexpected error occurs during execution.</span>
-</span><span data-line="78"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="79">
-</span><span data-line="80">        <span class="n">script_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
-</span><span data-line="81">
-</span><span data-line="82">        <span class="c1"># Check if script_path is absolute, else run relative to dir case</span>
-</span><span data-line="83">        <span class="k">if</span> <span class="n">script_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
-</span><span data-line="84">            <span class="n">command</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">script_path</span><span class="p">)</span>
-</span><span data-line="85">
-</span><span data-line="86">            <span class="k">if</span> <span class="ow">not</span> <span class="n">script_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-</span><span data-line="87">                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-</span><span data-line="88">                    <span class="sa">f</span><span class="s1">&#39;Script file not found at absolute path: </span><span class="si">{</span><span class="n">script_path</span><span class="si">}</span><span class="s1">&#39;</span>
-</span><span data-line="89">                <span class="p">)</span>
-</span><span data-line="90">        <span class="k">else</span><span class="p">:</span>
-</span><span data-line="91">            <span class="n">full_script_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">script_path</span>
-</span><span data-line="92">
-</span><span data-line="93">            <span class="k">if</span> <span class="ow">not</span> <span class="n">full_script_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
-</span><span data-line="94">                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
-</span><span data-line="95">                    <span class="s1">&#39;Script file not found inside case directory: &#39;</span> <span class="o">+</span>
-</span><span data-line="96">                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">full_script_path</span><span class="si">}</span><span class="s1">&#39;</span>
-</span><span data-line="97">                <span class="p">)</span>
-</span><span data-line="98">
-</span><span data-line="99">            <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">&#39;</span>
-</span><span data-line="100">
-</span><span data-line="101">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="102">            <span class="c1"># Run script inside case directory</span>
-</span><span data-line="103">            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">case_path</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-</span><span data-line="104">        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span data-line="105">            <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
-</span><span data-line="106">                <span class="sa">f</span><span class="s1">&#39;Script execution failed for case &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot; &#39;</span> <span class="o">+</span>
-</span><span data-line="107">                <span class="sa">f</span><span class="s1">&#39;at path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">case_path</span><span class="si">}</span><span class="s1">.&#39;</span>
-</span><span data-line="108">            <span class="p">)</span>
-</span><span data-line="109">            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
-</span><span data-line="110">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-</span><span data-line="111">            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-</span><span data-line="112">                <span class="s1">&#39;An unexpected error occured while trying to run script &#39;</span> <span class="o">+</span>
-</span><span data-line="113">                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">&quot; for case &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span>
-</span><span data-line="114">            <span class="p">)</span></div>
+</span><span data-line="58">    <span class="k">def</span><span class="w"> </span><span class="nf">run_script</span><span class="p">(</span>
+</span><span data-line="59">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="60">        <span class="n">file_name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="61">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="62">
+</span><span data-line="63"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="64"><span class="sd">        Executes an arbitrary script within the context of the OpenFOAM case.</span>
+</span><span data-line="65">
+</span><span data-line="66"><span class="sd">        Parameters</span>
+</span><span data-line="67"><span class="sd">        ----------</span>
+</span><span data-line="68"><span class="sd">        file_name : str</span>
+</span><span data-line="69"><span class="sd">            The path to the script file. If a relative path is provided, it is</span>
+</span><span data-line="70"><span class="sd">            resolved relative to the case directory. Absolute paths are used as-is.</span>
+</span><span data-line="71">
+</span><span data-line="72"><span class="sd">        Raises</span>
+</span><span data-line="73"><span class="sd">        ------</span>
+</span><span data-line="74"><span class="sd">        FileNotFoundError</span>
+</span><span data-line="75"><span class="sd">            If the script file does not exist at the resolved path.</span>
+</span><span data-line="76"><span class="sd">        RuntimeError</span>
+</span><span data-line="77"><span class="sd">            If the script execution fails (returns a non-zero exit code) or if an</span>
+</span><span data-line="78"><span class="sd">            unexpected error occurs during execution.</span>
+</span><span data-line="79"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="80">
+</span><span data-line="81">        <span class="n">script_path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+</span><span data-line="82">
+</span><span data-line="83">        <span class="c1"># Check if script_path is absolute, else run relative to dir case</span>
+</span><span data-line="84">        <span class="k">if</span> <span class="n">script_path</span><span class="o">.</span><span class="n">is_absolute</span><span class="p">():</span>
+</span><span data-line="85">            <span class="n">command</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">script_path</span><span class="p">)</span>
+</span><span data-line="86">
+</span><span data-line="87">            <span class="k">if</span> <span class="ow">not</span> <span class="n">script_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span data-line="88">                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+</span><span data-line="89">                    <span class="sa">f</span><span class="s1">&#39;Script file not found at absolute path: </span><span class="si">{</span><span class="n">script_path</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span data-line="90">                <span class="p">)</span>
+</span><span data-line="91">        <span class="k">else</span><span class="p">:</span>
+</span><span data-line="92">            <span class="n">full_script_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">script_path</span>
+</span><span data-line="93">
+</span><span data-line="94">            <span class="k">if</span> <span class="ow">not</span> <span class="n">full_script_path</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span data-line="95">                <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+</span><span data-line="96">                    <span class="s1">&#39;Script file not found inside case directory: &#39;</span> <span class="o">+</span>
+</span><span data-line="97">                    <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">full_script_path</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span data-line="98">                <span class="p">)</span>
+</span><span data-line="99">
+</span><span data-line="100">            <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;./</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span data-line="101">
+</span><span data-line="102">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="103">            <span class="c1"># Run script inside case directory</span>
+</span><span data-line="104">            <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">cwd</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">case_path</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span data-line="105">        <span class="k">except</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">CalledProcessError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="106">            <span class="n">err_msg</span> <span class="o">=</span> <span class="p">(</span>
+</span><span data-line="107">                <span class="sa">f</span><span class="s1">&#39;Script execution failed for case &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot; &#39;</span> <span class="o">+</span>
+</span><span data-line="108">                <span class="sa">f</span><span class="s1">&#39;at path: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">case_path</span><span class="si">}</span><span class="s1">.&#39;</span>
+</span><span data-line="109">            <span class="p">)</span>
+</span><span data-line="110">            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">err_msg</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">e</span>
+</span><span data-line="111">        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span data-line="112">            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
+</span><span data-line="113">                <span class="s1">&#39;An unexpected error occured while trying to run script &#39;</span> <span class="o">+</span>
+</span><span data-line="114">                <span class="sa">f</span><span class="s1">&#39;&quot;</span><span class="si">{</span><span class="n">file_name</span><span class="si">}</span><span class="s1">&quot; for case &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot;: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s1">&#39;</span>
+</span><span data-line="115">            <span class="p">)</span></div>
 
-</span><span data-line="115">
+</span><span data-line="116">
 <div class="viewcode-block" id="FoamCase.field_add">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.field_add">[docs]</a>
-</span><span data-line="116">    <span class="k">def</span><span class="w"> </span><span class="nf">field_add</span><span class="p">(</span>
-</span><span data-line="117">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="118">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
-</span><span data-line="119">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="120">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="121">
-</span><span data-line="122"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="123"><span class="sd">        Loads field data from a file and registers it to the case.</span>
-</span><span data-line="124">
-</span><span data-line="125"><span class="sd">        Parameters</span>
-</span><span data-line="126"><span class="sd">        ----------</span>
-</span><span data-line="127"><span class="sd">        file_path : str</span>
-</span><span data-line="128"><span class="sd">            The path to the data file, relative to the case directory.</span>
-</span><span data-line="129"><span class="sd">        field_name : str</span>
-</span><span data-line="130"><span class="sd">            The unique name (key) to assign to this field data.</span>
-</span><span data-line="131"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="132">
-</span><span data-line="133">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
-</span><span data-line="134">
-</span><span data-line="135">        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">FieldData</span><span class="p">(</span>
-</span><span data-line="136">            <span class="n">path</span><span class="p">,</span> <span class="n">field_name</span>
-</span><span data-line="137">        <span class="p">)</span></div>
+</span><span data-line="117">    <span class="k">def</span><span class="w"> </span><span class="nf">field_add</span><span class="p">(</span>
+</span><span data-line="118">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="119">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+</span><span data-line="120">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="121">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="122">
+</span><span data-line="123"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="124"><span class="sd">        Loads field data from a file and registers it to the case.</span>
+</span><span data-line="125">
+</span><span data-line="126"><span class="sd">        Parameters</span>
+</span><span data-line="127"><span class="sd">        ----------</span>
+</span><span data-line="128"><span class="sd">        file_path : str</span>
+</span><span data-line="129"><span class="sd">            The path to the data file, relative to the case directory.</span>
+</span><span data-line="130"><span class="sd">        field_name : str</span>
+</span><span data-line="131"><span class="sd">            The unique name (key) to assign to this field data.</span>
+</span><span data-line="132"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="133">
+</span><span data-line="134">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
+</span><span data-line="135">
+</span><span data-line="136">        <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">FieldData</span><span class="p">(</span>
+</span><span data-line="137">            <span class="n">path</span><span class="p">,</span> <span class="n">field_name</span>
+</span><span data-line="138">        <span class="p">)</span></div>
 
-</span><span data-line="138">
+</span><span data-line="139">
 <div class="viewcode-block" id="FoamCase.field_delete">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.field_delete">[docs]</a>
-</span><span data-line="139">    <span class="k">def</span><span class="w"> </span><span class="nf">field_delete</span><span class="p">(</span>
-</span><span data-line="140">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="141">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="142">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="143">
-</span><span data-line="144"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="145"><span class="sd">        Removes a specified field from the case.</span>
-</span><span data-line="146">
-</span><span data-line="147"><span class="sd">        Parameters</span>
-</span><span data-line="148"><span class="sd">        ----------</span>
-</span><span data-line="149"><span class="sd">        field_name : str</span>
-</span><span data-line="150"><span class="sd">            The name of the field to delete.</span>
-</span><span data-line="151"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="152">
-</span><span data-line="153">        <span class="k">try</span><span class="p">:</span>
-</span><span data-line="154">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
-</span><span data-line="155">        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-</span><span data-line="156">            <span class="nb">print</span><span class="p">(</span>
-</span><span data-line="157">                <span class="sa">f</span><span class="s1">&#39;Field &quot;</span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s1">&quot; is not in &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot; fields.&#39;</span>
-</span><span data-line="158">            <span class="p">)</span></div>
+</span><span data-line="140">    <span class="k">def</span><span class="w"> </span><span class="nf">field_delete</span><span class="p">(</span>
+</span><span data-line="141">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="142">        <span class="n">field_name</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="143">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="144">
+</span><span data-line="145"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="146"><span class="sd">        Removes a specified field from the case.</span>
+</span><span data-line="147">
+</span><span data-line="148"><span class="sd">        Parameters</span>
+</span><span data-line="149"><span class="sd">        ----------</span>
+</span><span data-line="150"><span class="sd">        field_name : str</span>
+</span><span data-line="151"><span class="sd">            The name of the field to delete.</span>
+</span><span data-line="152"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="153">
+</span><span data-line="154">        <span class="k">try</span><span class="p">:</span>
+</span><span data-line="155">            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="n">field_name</span><span class="p">]</span>
+</span><span data-line="156">        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+</span><span data-line="157">            <span class="nb">print</span><span class="p">(</span>
+</span><span data-line="158">                <span class="sa">f</span><span class="s1">&#39;Field &quot;</span><span class="si">{</span><span class="n">field_name</span><span class="si">}</span><span class="s1">&quot; is not in &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot; fields.&#39;</span>
+</span><span data-line="159">            <span class="p">)</span></div>
 
-</span><span data-line="159">
+</span><span data-line="160">
 <div class="viewcode-block" id="FoamCase.residuals_add">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.residuals_add">[docs]</a>
-</span><span data-line="160">    <span class="k">def</span><span class="w"> </span><span class="nf">residuals_add</span><span class="p">(</span>
-</span><span data-line="161">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="162">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="163">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="164">
-</span><span data-line="165"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="166"><span class="sd">        Loads residual data from a specified file.</span>
-</span><span data-line="167">
-</span><span data-line="168"><span class="sd">        Parameters</span>
-</span><span data-line="169"><span class="sd">        ----------</span>
-</span><span data-line="170"><span class="sd">        file_path : str</span>
-</span><span data-line="171"><span class="sd">            The path to the residuals file, relative to the case directory.</span>
-</span><span data-line="172"><span class="sd">        fields : list[str], optional</span>
-</span><span data-line="173"><span class="sd">            A list of specific residual fields to load. If empty, all available</span>
-</span><span data-line="174"><span class="sd">            fields are loaded. Default is an empty list.</span>
-</span><span data-line="175"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="176">
-</span><span data-line="177">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
-</span><span data-line="178">
-</span><span data-line="179">        <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span> <span class="o">=</span> <span class="n">ResidualData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+</span><span data-line="161">    <span class="k">def</span><span class="w"> </span><span class="nf">residuals_add</span><span class="p">(</span>
+</span><span data-line="162">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="163">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="164">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="165">
+</span><span data-line="166"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="167"><span class="sd">        Loads residual data from a specified file.</span>
+</span><span data-line="168">
+</span><span data-line="169"><span class="sd">        Parameters</span>
+</span><span data-line="170"><span class="sd">        ----------</span>
+</span><span data-line="171"><span class="sd">        file_path : str</span>
+</span><span data-line="172"><span class="sd">            The path to the residuals file, relative to the case directory.</span>
+</span><span data-line="173"><span class="sd">        fields : list[str], optional</span>
+</span><span data-line="174"><span class="sd">            A list of specific residual fields to load. If empty, all available</span>
+</span><span data-line="175"><span class="sd">            fields are loaded. Default is an empty list.</span>
+</span><span data-line="176"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="177">
+</span><span data-line="178">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
+</span><span data-line="179">
+</span><span data-line="180">        <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span> <span class="o">=</span> <span class="n">ResidualData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
-</span><span data-line="180">
+</span><span data-line="181">
 <div class="viewcode-block" id="FoamCase.get_residuals">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.get_residuals">[docs]</a>
-</span><span data-line="181">    <span class="k">def</span><span class="w"> </span><span class="nf">get_residuals</span><span class="p">(</span>
-</span><span data-line="182">        <span class="bp">self</span>
-</span><span data-line="183">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="184">
-</span><span data-line="185"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="186"><span class="sd">        Placeholder</span>
-</span><span data-line="187"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="188">
-</span><span data-line="189">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span></div>
+</span><span data-line="182">    <span class="k">def</span><span class="w"> </span><span class="nf">get_residuals</span><span class="p">(</span>
+</span><span data-line="183">        <span class="bp">self</span>
+</span><span data-line="184">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResidualData</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="185">
+</span><span data-line="186"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="187"><span class="sd">        Placeholder</span>
+</span><span data-line="188"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="189">
+</span><span data-line="190">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">residuals</span></div>
 
-</span><span data-line="190">
+</span><span data-line="191">
 <div class="viewcode-block" id="FoamCase.interpolation_add">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.interpolation_add">[docs]</a>
-</span><span data-line="191">    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation_add</span><span class="p">(</span>
-</span><span data-line="192">        <span class="bp">self</span><span class="p">,</span>
-</span><span data-line="193">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
-</span><span data-line="194">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="195">
-</span><span data-line="196"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-</span><span data-line="197"><span class="sd">        Placeholder</span>
-</span><span data-line="198"><span class="sd">        &quot;&quot;&quot;</span>
-</span><span data-line="199">
-</span><span data-line="200">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
-</span><span data-line="201">
-</span><span data-line="202">        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">InterpolationData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+</span><span data-line="192">    <span class="k">def</span><span class="w"> </span><span class="nf">interpolation_add</span><span class="p">(</span>
+</span><span data-line="193">        <span class="bp">self</span><span class="p">,</span>
+</span><span data-line="194">        <span class="n">file_path</span><span class="p">:</span> <span class="nb">str</span>
+</span><span data-line="195">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="196">
+</span><span data-line="197"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="198"><span class="sd">        Placeholder</span>
+</span><span data-line="199"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="200">
+</span><span data-line="201">        <span class="n">path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="n">file_path</span>
+</span><span data-line="202">
+</span><span data-line="203">        <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span> <span class="o">=</span> <span class="n">InterpolationData</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
 
-</span><span data-line="203">
+</span><span data-line="204">
 <div class="viewcode-block" id="FoamCase.get_interpolation">
 <a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.get_interpolation">[docs]</a>
-</span><span data-line="204">    <span class="k">def</span><span class="w"> </span><span class="nf">get_interpolation</span><span class="p">(</span>
-</span><span data-line="205">        <span class="bp">self</span>
-</span><span data-line="206">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-</span><span data-line="207">
-</span><span data-line="208">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span></div>
+</span><span data-line="205">    <span class="k">def</span><span class="w"> </span><span class="nf">get_interpolation</span><span class="p">(</span>
+</span><span data-line="206">        <span class="bp">self</span>
+</span><span data-line="207">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InterpolationData</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="208">
+</span><span data-line="209"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="210"><span class="sd">        Placeholder</span>
+</span><span data-line="211"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="212">
+</span><span data-line="213">        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">interpolation</span></div>
+
+</span><span data-line="214">
+<div class="viewcode-block" id="FoamCase.get_yplus">
+<a class="viewcode-back" href="../../../core.html#lutils.core.FoamCase.get_yplus">[docs]</a>
+</span><span data-line="215">    <span class="k">def</span><span class="w"> </span><span class="nf">get_yplus</span><span class="p">(</span>
+</span><span data-line="216">        <span class="bp">self</span>
+</span><span data-line="217">    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+</span><span data-line="218">
+</span><span data-line="219"><span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span data-line="220"><span class="sd">        Placeholder</span>
+</span><span data-line="221"><span class="sd">        &quot;&quot;&quot;</span>
+</span><span data-line="222">
+</span><span data-line="223">        <span class="nb">dir</span> <span class="o">=</span> <span class="n">get_latest_time</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">case_path</span><span class="p">)</span>
+</span><span data-line="224">        <span class="k">if</span> <span class="nb">dir</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="225">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;No simulation time was found for case &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot;&#39;</span><span class="p">)</span>
+</span><span data-line="226">            <span class="k">return</span>
+</span><span data-line="227">
+</span><span data-line="228">        <span class="nb">dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">dir</span><span class="p">)</span>
+</span><span data-line="229">        <span class="n">file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">case_path</span> <span class="o">/</span> <span class="nb">dir</span> <span class="o">/</span> <span class="s1">&#39;yOrthoi&#39;</span>
+</span><span data-line="230">
+</span><span data-line="231">        <span class="k">if</span> <span class="ow">not</span> <span class="n">file</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+</span><span data-line="232">            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;&quot;yOtrhoi&quot; not found in directory &quot;</span><span class="si">{</span><span class="nb">dir</span><span class="si">}</span><span class="s1">&quot;&#39;</span> <span class="o">+</span>
+</span><span data-line="233">                  <span class="sa">f</span><span class="s1">&#39; for case &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span>
+</span><span data-line="234">            <span class="k">return</span>
+</span><span data-line="235">
+</span><span data-line="236">        <span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+</span><span data-line="237">        <span class="n">in_brackets</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="238">        <span class="k">with</span> <span class="n">file</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="239">            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+</span><span data-line="240">                <span class="n">clean_line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+</span><span data-line="241">                <span class="k">if</span> <span class="n">clean_line</span> <span class="o">==</span> <span class="s1">&#39;(&#39;</span><span class="p">:</span>
+</span><span data-line="242">                     <span class="n">in_brackets</span> <span class="o">=</span> <span class="kc">True</span>
+</span><span data-line="243">                     <span class="k">continue</span>
+</span><span data-line="244">
+</span><span data-line="245">                <span class="k">if</span> <span class="n">clean_line</span> <span class="o">==</span> <span class="s1">&#39;)&#39;</span><span class="p">:</span>
+</span><span data-line="246">                    <span class="n">in_brackets</span> <span class="o">=</span> <span class="kc">False</span>
+</span><span data-line="247">                    <span class="k">continue</span>
+</span><span data-line="248">
+</span><span data-line="249">                <span class="k">if</span> <span class="n">in_brackets</span><span class="p">:</span>
+</span><span data-line="250">                    <span class="n">value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+</span><span data-line="251">                    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span data-line="252">                        <span class="k">continue</span>
+</span><span data-line="253">                    <span class="n">data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+</span><span data-line="254">
+</span><span data-line="255">        <span class="n">df</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+</span><span data-line="256">
+</span><span data-line="257">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;y+ for case: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">label</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="258">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    mean: </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="259">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    min:  </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">min</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</span><span data-line="260">        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;    max:  </span><span class="si">{</span><span class="n">df</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">.</span><span class="n">item</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
 </div>
 
 </span></pre></div>
